@@ -180,6 +180,17 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             Route::get('/change/password','UserController@changePassword')->name('admin.change.password');
             Route::post('post/change/password', 'UserController@postChangePassword')->name('admin.post.change.password');
         });
+
+        Route::group(['prefix' => 'group'], function(){
+            Route::get('/','GroupController@index')->name('group.index')->middleware('permission:danh-sach-nhom-sinh-vien|toan-quyen-quan-ly');
+            Route::get('/create','GroupController@create')->name('group.create')->middleware('permission:them-moi-nhom-sinh-vien|toan-quyen-quan-ly');
+            Route::post('/create','GroupController@store');
+
+            Route::get('/update/{id}','GroupController@edit')->name('group.update')->middleware('permission:chinh-sua-nhom-sinh-vien|toan-quyen-quan-ly');
+            Route::post('/update/{id}','GroupController@update');
+
+            Route::get('/delete/{id}','GroupController@delete')->name('group.delete')->middleware('permission:xoa-nhom-sinh-vien|toan-quyen-quan-ly');
+        });
     });
 });
 
@@ -218,6 +229,7 @@ Route::group(['namespace' => 'Page'], function() {
 
             Route::get('notifications', 'NotificationController@index')->name('user.notifications.index');
             Route::get('notification/details/{id}', 'NotificationController@details')->name('user.notifications.details');
+            Route::get('about', 'HomeController@about')->name('user.about');
         });
     });
 });

@@ -42,14 +42,35 @@
                     </a>
                 </li>
                 @endif
-                @if ($user->can(['toan-quyen-quan-ly', 'quan-ly-danh-sach-sinh-vien']))
-                <li class="nav-item">
-                    <a href="{{ route('student.index') }}" class="nav-link {{ isset($student_active) ? $student_active : '' }}">
-                        <i class="nav-icon fa fa-graduation-cap" aria-hidden="true"></i>
-                        <p>Sinh viên </p>
-                    </a>
-                </li>
+
+
+                @if ($user->can(['toan-quyen-quan-ly', 'quan-ly-danh-sach-sinh-vien', 'danh-sach-nhom-sinh-vien']))
+                    <li class="nav-item has-treeview {{ isset($student_active) || isset($group_active) ? 'menu-open' : ''}}">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fa fa-graduation-cap" aria-hidden="true"></i>
+                            <p>Quản lý sinh viên <i class="fas fa-angle-left right"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            @if ($user->can(['toan-quyen-quan-ly', 'quan-ly-danh-sach-sinh-vien']))
+                                <li class="nav-item">
+                                    <a href="{{ route('student.index') }}" class="nav-link {{ isset($student_active) ? $student_active : '' }}">
+                                        <i class="far fa-circle nav-icon" aria-hidden="true"></i>
+                                        <p>Sinh viên </p>
+                                    </a>
+                                </li>
+                            @endif
+                            @if ($user->can(['toan-quyen-quan-ly', 'danh-sach-nhom-sinh-vien']))
+                                <li class="nav-item">
+                                    <a href="{{ route('group.index') }}" class="nav-link {{ isset($group_active) ? $group_active : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Nhóm sinh viên</p>
+                                    </a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
                 @endif
+
                 @if ($user->can(['toan-quyen-quan-ly', 'quan-ly-danh-sach-giao-vien']))
                 <li class="nav-item">
                     <a href="{{ route('user.index') }}" class="nav-link {{ isset($user_active) ? $user_active : '' }}">
