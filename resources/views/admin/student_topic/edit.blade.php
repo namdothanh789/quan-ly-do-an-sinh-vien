@@ -87,46 +87,48 @@
                                 <div class="card-body">
                                     <form role="form" action="{{ route('student.update.outline', $student->id) }}" method="post" enctype="multipart/form-data">
                                         <div class="form-group">
-                                            <label for="inputName" class="col-sm-12 col-form-label">Tên đề cương : <sup class="title-sup">(*)</sup></label>
+                                            <label for="inputName" class="col-sm-12 col-form-label">Chọn đề cương : <sup class="title-sup">(*)</sup></label>
                                             <div class="col-sm-12">
-                                                <input type="text" class="form-control" id="inputName" placeholder="Tên đề cương" name="st_outline" value="{{ old('st_outline', isset($student) ? $student->st_outline : '') }}">
-                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('st_outline') }}</p></span>
+                                                {{--<input type="text" class="form-control" id="inputName" placeholder="Tên đề cương" name="st_outline" value="{{ old('st_outline', isset($student) ? $student->st_outline : '') }}">--}}
+                                                <select name="result_outline_file_id" id="" class="form-control">
+                                                    <option value="">Chọn đề cương cần nhận sét</option>
+                                                    @foreach($student->result_outline_files as $outline_file)
+                                                        <option value="{{ $outline_file->id }}">{{ $outline_file->rf_title }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('result_outline_file_id') }}</p></span>
                                             </div>
                                         </div>
                                         <div class="form-group ">
                                             <label for="inputName" class="col-sm-12 col-form-label">Điểm đề cương :</label>
                                             <div class="col-sm-12">
-                                                <input type="number" step="0.01" class="form-control" id="inputName" name="st_point_outline" value="{{ old('st_point_outline', isset($student) ? $student->st_point_outline : 0) }}">
-                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('st_point_outline') }}</p></span>
+                                                <input type="number" step="0.01" class="form-control" id="inputName" name="rf_point" value="">
+                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('rf_point') }}</p></span>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputName" class="col-sm-12 col-form-label">Trạng thái :</label>
                                             <div class="col-sm-12">
-                                                <select name="st_status_outline" class="form-control">
-                                                    <option value="0">Chưa nộp</option>
+                                                <select name="rf_status" class="form-control">
                                                     @foreach($status_outline as $key => $status)
-                                                        <option  {{old('st_status_outline', isset($student) ? $student->st_status_outline : '') == $key ? 'selected=selected' : '' }}  value="{{$key}}">{{$status}}</option>
+                                                        <option value="{{$key}}">{{$status}}</option>
                                                     @endforeach
                                                 </select>
-                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('st_status_outline') }}</p></span>
+                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('rf_status') }}</p></span>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="inputName" class="col-sm-12 col-form-label">File đính kèm</label>
+                                            <label for="inputName" class="col-sm-12 col-form-label">File phản hồi</label>
                                             <div class="col-sm-12">
                                                 <input type="file" class="form-control" id="inputName" placeholder="" name="outline_part" value="">
-                                                @if (!empty($student->st_outline_part) && !empty($student->st_status_outline))
-                                                    <a href="{!! asset('uploads/documents/' . $student->st_outline_part) !!}" target="_blank" download>Download</a>
-                                                @endif
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputName" class="col-sm-12 col-form-label">Nhận sét</label>
                                             <div class="col-sm-12">
-                                                <textarea name="st_comment_outline" id="st_comment_outline" cols="30" rows="10" class="form-control">{!! $student->st_comment_outline !!}</textarea>
+                                                <textarea name="rf_comment" id="rf_comment" cols="30" rows="10" class="form-control"></textarea>
                                                 <script>
-                                                    ckeditor(st_comment_outline);
+                                                    ckeditor(rf_comment);
                                                 </script>
                                             </div>
                                         </div>
@@ -143,51 +145,53 @@
                         <div class="col-md-6">
                             <div class="card card-info">
                                 <div class="card-header">
-                                    <h3 class="card-title" style="color: #FFFFFF !important;">Thông Tin Khóa Luận</h3>
+                                    <h3 class="card-title" style="color: #FFFFFF !important;">Thông Tin Đồ Án</h3>
                                 </div>
                                 <div class="card-body">
                                     <form role="form" action="{{ route('student.update.thesis.book', $student->id) }}" method="post" enctype="multipart/form-data">
                                         <div class="form-group">
-                                            <label for="inputName" class="col-sm-12 col-form-label">Tên khóa luận : <sup class="title-sup">(*)</sup></label>
+                                            <label for="inputName" class="col-sm-12 col-form-label">Chọn báo cáo : <sup class="title-sup">(*)</sup></label>
                                             <div class="col-sm-12">
-                                                <input type="text" class="form-control" id="inputName" placeholder="Tên khóa luận" name="st_thesis_book" value="{{ old('st_thesis_book', isset($student) ? $student->st_thesis_book : '') }}">
-                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('st_thesis_book') }}</p></span>
+                                                {{--<input type="text" class="form-control" id="inputName" placeholder="Tên đồ án" name="st_thesis_book" value="{{ old('st_thesis_book', isset($student) ? $student->st_thesis_book : '') }}">--}}
+                                                <select name="result_book_file_id" id="" class="form-control">
+                                                    <option value="">Chọn báo cáo</option>
+                                                    @foreach($student->result_book_files as $book_file)
+                                                        <option value="{{ $book_file->id }}">{{ $book_file->rf_title }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('result_book_file_id') }}</p></span>
                                             </div>
                                         </div>
                                         <div class="form-group ">
-                                            <label for="inputName" class="col-sm-12 col-form-label">Điểm khóa luận :</label>
+                                            <label for="inputName" class="col-sm-12 col-form-label">Điểm đồ án :</label>
                                             <div class="col-sm-12">
-                                                <input type="number" step="0.01" class="form-control" id="inputName" placeholder="Điểm" name="st_point_thesis_book" value="{{ old('st_point_thesis_book', isset($student) ? $student->st_point_thesis_book : 0) }}">
-                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('st_point_thesis_book') }}</p></span>
+                                                <input type="number" step="0.01" class="form-control" id="inputName" placeholder="Điểm" name="rf_point" value="">
+                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('rf_point') }}</p></span>
                                             </div>
                                         </div>
                                         <div class="form-group ">
                                             <label for="inputName" class="col-sm-12 col-form-label">Trạng thái :</label>
                                             <div class="col-sm-12">
-                                                <select name="st_status_thesis_book" class="form-control">
-                                                    <option value="0">Chưa nộp</option>
+                                                <select name="rf_status" class="form-control">
                                                     @foreach($status_outline as $key => $status)
-                                                        <option  {{old('st_status_thesis_book', isset($student) ? $student->st_status_thesis_book : '') == $key ? 'selected=selected' : '' }}  value="{{$key}}">{{$status}}</option>
+                                                        <option value="{{$key}}">{{$status}}</option>
                                                     @endforeach
                                                 </select>
-                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('st_status_thesis_book') }}</p></span>
+                                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('rf_status') }}</p></span>
                                             </div>
                                         </div>
                                         <div class="form-group ">
                                             <label for="inputName" class="col-sm-12 col-form-label">File đính kèm</label>
                                             <div class="col-sm-12">
                                                 <input type="file" class="form-control" id="inputName" placeholder="" name="thesis_book_part" value="">
-                                                @if (!empty($student->st_thesis_book_part) && !empty($student->st_thesis_book_part))
-                                                    <a href="{!! asset('uploads/documents/' . $student->st_thesis_book_part) !!}" target="_blank" download>Download </a>
-                                                @endif
                                             </div>
                                         </div>
                                         <div class="form-group ">
                                             <label for="inputName" class="col-sm-12 col-form-label">Nhận sét</label>
                                             <div class="col-sm-12">
-                                                <textarea name="st_comment_thesis_book" id="st_comment_thesis_book" cols="30" rows="10" class="form-control"></textarea>
+                                                <textarea name="rf_comment" id="rf_book_comment" cols="30" rows="10" class="form-control"></textarea>
                                                 <script>
-                                                    ckeditor(st_comment_thesis_book);
+                                                    ckeditor(rf_book_comment);
                                                 </script>
                                             </div>
                                         </div>

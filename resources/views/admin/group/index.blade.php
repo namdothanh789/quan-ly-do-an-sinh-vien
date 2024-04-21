@@ -39,6 +39,7 @@
                                 <thead>
                                     <tr>
                                         <th width="4%" class=" text-center">STT</th>
+                                        <th>Giáo viên</th>
                                         <th>Tên nhóm sinh viên</th>
                                         <th>Danh sách thành viên</th>
                                         <th width="10%">Ngày tạo</th>
@@ -53,6 +54,7 @@
                                         @foreach($groups as $group)
                                             <tr>
                                                 <td class=" text-center">{{ $i }}</td>
+                                                <td>{{ $group->user->name }}</td>
                                                 <td>{{ $group->name }}</td>
                                                 <td>
                                                     @php

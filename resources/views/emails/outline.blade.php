@@ -9,10 +9,10 @@
             @if ($data['teacher_status'] == 1)
             <p>Giáo viên : {{ $data['name_teacher'] }} đã @if(!empty($data['status'])) <b>{{ $data['status'] }}</b> @else nhận sét @endif @if ($data['outline_status'] == 1) đề cương @else khóa luận @endif : {{ $data['title'] }}.</p>
             @else
-            <p>Sinh viên : {{ $data['name_student'] }} đã nộp @if ($data['outline_status'] == 1) đề cương @else khóa luận @endif : {{ $data['title'] }}.</p>
+            <p>Sinh viên : {{ $data['name_student'] }} đã nộp @if ($data['outline_status'] == 1) đề cương @else đồ án @endif : {{ $data['title'] }}.</p>
             @endif
         @else
-            Kết quả đánh giá đề tài khóa luận : {{ $data['title'] }}
+            Kết quả đánh giá đề tài đồ án : {{ $data['title'] }}
             <p><b>Trạng thái</b> : {{ $data['status'] }}</p>
         @endif
         @if ($data['teacher_status'] == 1)

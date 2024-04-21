@@ -7,8 +7,8 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-left">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}"> <i class="nav-icon fas fa fa-home"></i> Trang chủ</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('notifications.index') }}">Thông báo / Lịch hẹn</a></li>
-                        <li class="breadcrumb-item active">Chỉnh sửa</li>
+                        <li class="breadcrumb-item"><a href="{{ route('schedule.student.index') }}">Lịch hẹn</a></li>
+                        <li class="breadcrumb-item active">Tạo mới</li>
                     </ol>
                 </div>
             </div>
@@ -17,6 +17,6 @@
 
     <!-- Main content -->
     <section class="content">
-        @include('admin.notification.form')
+        @include('admin.schedule.form')
     </section>
 @stop

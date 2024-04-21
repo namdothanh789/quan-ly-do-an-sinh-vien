@@ -10,54 +10,44 @@
                             <div class="form-group {{ $errors->first('n_title') ? 'has-error' : '' }} col-md-6">
                                 <label for="inputEmail3" class="col-form-label">Tiêu đề <sup class="text-danger">(*)</sup></label>
                                 <div>
-                                    <input type="text" maxlength="100" class="form-control"  placeholder="Tiêu đề thông báo" name="n_title" value="{{ old('n_title', isset($notification) ? $notification->n_title : '') }}">
+                                    <input type="text" maxlength="100" class="form-control"  placeholder="Tiêu đề lịch hẹn" name="n_title" value="{{ old('n_title', isset($notification) ? $notification->n_title : '') }}">
                                     <span class="text-danger "><p class="mg-t-5">{{ $errors->first('n_title') }}</p></span>
                                 </div>
                             </div>
                             <div class="form-group col-md-6" >
-                                <label for="inputName2" class="col-form-label">Thông báo cho niên khóa</label>
+                                <label for="inputName2" class="col-form-label">Loại cuộc hẹn </label>
                                 <div>
-                                    <select name="n_course_id" class="form-control">
-                                        <option value="">Chọn niên khóa</option>
-                                        @foreach($courses as $key => $course)
-                                            <option  {{old('department_id', isset($notification) ? $notification->n_course_id : '') == $course->id ? 'selected=selected' : '' }}  value="{{$course->id}}">{{$course->c_name}}</option>
+                                    <select name="n_schedule_type" class="form-control">
+                                        @foreach($schedule_types as $key => $type)
+                                            <option  {{old('n_schedule_type', isset($notification) ? $notification->n_schedule_type : '') == $key ? 'selected=selected' : '' }}  value="{{$key}}">{{$type}}</option>
                                         @endforeach
                                     </select>
-                                    <span class="text-danger"><p class="mg-t-5">{{ $errors->first('n_course_id') }}</p></span>
+                                    <span class="text-danger"><p class="mg-t-5">{{ $errors->first('n_schedule_type') }}</p></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-
-                            <div class="form-group col-md-6" >
-                                <label for="inputName2" class="col-form-label">Loại thông báo </label>
+                            <div class="form-group col-md-6">
+                                <label for="inputName2" class="col-form-label">Thời gian bắt đầu <sup class="text-danger">(*)</sup></label>
                                 <div>
-                                    <select name="n_type" class="form-control">
-                                        @foreach($types as $key => $type)
-                                            <option  {{old('n_type', isset($notification) ? $notification->n_type : '') == $key ? 'selected=selected' : '' }}  value="{{$key}}">{{$type}}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class="text-danger"><p class="mg-t-5">{{ $errors->first('n_type') }}</p></span>
+                                    <input type="datetime-local" name="n_from_date" class="form-control" value="{{ isset($notification) ? $notification->n_from_date : '' }}">
+                                    <span class="text-danger "><p class="mg-t-5">{{ $errors->first('n_from_date') }}</p></span>
                                 </div>
                             </div>
-                            <div class="form-group col-md-6" >
-                                <label for="inputName2" class="col-form-label">Đối tượng thông báo</label>
+
+                            <div class="form-group col-md-6">
+                                <label for="inputName2" class="col-form-label">Thời gian kết thúc <sup class="text-danger">(*)</sup></label>
                                 <div>
-                                    <select name="n_send_to" class="form-control">
-                                        <option value="">Chọn đối tượng thông báo</option>
-                                        @foreach($sendTo as $key => $item)
-                                            <option  {{old('n_send_to', isset($notification) ? $notification->n_send_to : '') == $key ? 'selected=selected' : '' }}  value="{{$key}}">{{$item}}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class="text-danger"><p class="mg-t-5">{{ $errors->first('n_send_to') }}</p></span>
+                                    <input type="datetime-local" name="n_end_date" class="form-control" value="{{ isset($notification) ? $notification->n_end_date : '' }}">
+                                    <span class="text-danger "><p class="mg-t-5">{{ $errors->first('n_end_date') }}</p></span>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group {{ $errors->first('users') ? 'has-error' : '' }}">
-                            <label for="inputEmail3" class="control-label default">Gửi trực tiếp</label>
+                            <label for="inputEmail3" class="control-label default">Dánh sách tham gia <sup class="text-danger">(*)</sup></label>
                             <div>
                                 <select class="custom-select  select2" id="users" name="users[]" multiple>
-                                    <option value="">Chọn giáo viên</option>
+                                    <option value="">Chọn người tham gia</option>
                                     @foreach($users as $key => $user)
                                         <option value="{{ $user->id }}"
                                                 @if( null !== old('users') and in_array($user->id, old('users')) or isset($notificationUsers) and isset($notificationUsers) and in_array($user->id, $notificationUsers)) selected ="selected" @endif
@@ -101,23 +91,23 @@
                         <h3 class="card-title">Trạng thái</h3>
                     </div>
                     <div class="card-body">
-                        <div style="margin-top: 15px;">
-                            <div class="icheck-primary d-inline">
-                                <input type="radio" id="radioPrimary1" name="n_status" value="1" {{ isset($notification->n_status) && $notification->n_status == 1 ? 'checked' : '' }} >
-                                <label for="radioPrimary1">
-                                    Đã duyệt
-                                </label>
-                            </div>
-                            <div class="icheck-primary d-inline" style="margin-left: 30px;">
-                                <input type="radio" id="radioPrimary2" name="n_status" value="2"
-                                        {{ isset($notification->n_status) && $notification->n_status == 2 ? 'checked' : '' }}
-                                        {{ !isset($notification) ? 'checked' : '' }}
-                                >
-                                <label for="radioPrimary2">
-                                    Chưa duyệt
-                                </label>
-                            </div>
-                        </div>
+                        {{--<div style="margin-top: 15px;">--}}
+                            {{--<div class="icheck-primary d-inline">--}}
+                                {{--<input type="radio" id="radioPrimary1" name="n_status" value="1" {{ isset($notification->n_status) && $notification->n_status == 1 ? 'checked' : '' }} >--}}
+                                {{--<label for="radioPrimary1">--}}
+                                    {{--Đã họp--}}
+                                {{--</label>--}}
+                            {{--</div>--}}
+                            {{--<div class="icheck-primary d-inline" style="margin-left: 30px;">--}}
+                                {{--<input type="radio" id="radioPrimary2" name="n_status" value="2"--}}
+                                        {{--{{ isset($notification->n_status) && $notification->n_status == 2 ? 'checked' : '' }}--}}
+                                        {{--{{ !isset($notification) ? 'checked' : '' }}--}}
+                                {{-->--}}
+                                {{--<label for="radioPrimary2">--}}
+                                    {{--Chưa họp--}}
+                                {{--</label>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
                     </div>
                     <!-- /.card-body -->
                 </div>

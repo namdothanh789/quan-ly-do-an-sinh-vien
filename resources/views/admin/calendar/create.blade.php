@@ -4,11 +4,11 @@
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <ol class="breadcrumb float-sm-left">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}"> <i class="nav-icon fas fa fa-home"></i> Trang chủ</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('notifications.index') }}">Thông báo / Lịch hẹn</a></li>
-                        <li class="breadcrumb-item active">Chỉnh sửa</li>
+                        <li class="breadcrumb-item"><a href="{{ route('calendar.index', $topic->id) }}">Phân công công việc</a></li>
+                        <li class="breadcrumb-item active">Đề tài : {{ $topic->topic->topic->t_title }} Sinh viên : {{ $topic->student->name }}</li>
                     </ol>
                 </div>
             </div>
@@ -17,6 +17,6 @@
 
     <!-- Main content -->
     <section class="content">
-        @include('admin.notification.form')
+        @include('admin.calendar.form')
     </section>
 @stop

@@ -131,6 +131,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             Route::post('/update/{id}','TopicController@update');
 
             Route::get('/delete/{id}','TopicController@delete')->name('topic.delete')->middleware('permission:xoa-de-tai|toan-quyen-quan-ly');
+
+            Route::post('/list/by/department', 'TopicController@getByDepartment')->name('list.by.department');
         });
 
 
@@ -174,6 +176,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             Route::post('/update/thesis/book{id}','StudentTopicController@updateThesisBook')->name('student.update.thesis.book')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');
             Route::post('/update/student/topics{id}','StudentTopicController@updateStudentTopic')->name('update.student.topic')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');
             Route::get('/delete/{id}', 'StudentTopicController@delete')->name('student.topics.delete')->middleware('permission:xoa-de-tai-sinh-vien-dang-ky|toan-quyen-quan-ly');
+
+            Route::get('/view/files/{id}','StudentTopicController@viewFileReport')->name('student.topics.view.files');
         });
 
         Route::group(['prefix' => 'admin'], function(){
@@ -191,6 +195,34 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
 
             Route::get('/delete/{id}','GroupController@delete')->name('group.delete')->middleware('permission:xoa-nhom-sinh-vien|toan-quyen-quan-ly');
         });
+
+        Route::group(['prefix' => 'calendar'], function(){
+            Route::get('/{id}','CalendarController@index')->name('calendar.index')->middleware('permission:toan-quyen-quan-ly|danh-sach-phan-cong-cong-viec');
+            Route::get('/create/{id}','CalendarController@create')->name('calendar.create')->middleware('permission:toan-quyen-quan-ly|them-moi-phan-cong-cong-viec');
+            Route::post('/create/{id}','CalendarController@store');
+
+            Route::get('/update/{id}','CalendarController@edit')->name('calendar.update')->middleware('permission:toan-quyen-quan-ly|chinh-sua-phan-cong-cong-viec');
+            Route::post('/update/{id}','CalendarController@update');
+
+            Route::get('/delete/{id}','CalendarController@delete')->name('calendar.delete')->middleware('permission:toan-quyen-quan-ly|xoa-phan-cong-cong-viec');
+            Route::post('/show','CalendarController@show')->name('calendar.show');
+        });
+
+        Route::group(['prefix' => 'schedule/student'], function(){
+            Route::get('/','ScheduleStudentController@index')->name('schedule.student.index')->middleware('permission:toan-quyen-quan-ly|danh-sach-lich-hen');
+            Route::get('/create','ScheduleStudentController@create')->name('schedule.student.create')->middleware('permission:toan-quyen-quan-ly|them-moi-lich-hen');
+            Route::post('/create','ScheduleStudentController@store');
+
+            Route::get('/update/{id}','ScheduleStudentController@edit')->name('schedule.student.update')->middleware('permission:toan-quyen-quan-ly|chinh-sua-lich-hen');
+            Route::post('/update/{id}','ScheduleStudentController@update');
+
+            Route::get('/delete/{id}','ScheduleStudentController@delete')->name('schedule.student.delete')->middleware('permission:toan-quyen-quan-ly|xoa-lich-hen');
+
+            Route::get('/show/{id}','ScheduleStudentController@show')->name('schedule.student.show');
+        });
+    });
+    Route::group(['prefix' => 'schedule/student'], function(){
+        Route::get('/confirm/{noti_id}/{user_id}','ScheduleStudentController@confirm')->name('schedule.student.confirm');
     });
 });
 
@@ -218,6 +250,7 @@ Route::group(['namespace' => 'Page'], function() {
 
             Route::get('/outline', 'UserController@outline')->name('user.outline');
             Route::post('/post/outline/{id}', 'UserController@postOutline')->name('user.post.outline');
+            Route::get('/download/file/{id}', 'UserController@downloadFile')->name('download.file.outline');
 
             Route::get('/thesis/book', 'UserController@thesisBook')->name('user.thesis.book');
             Route::post('/post/thesis/book/{id}', 'UserController@postThesisBook')->name('user.post.thesis.book');
@@ -230,6 +263,24 @@ Route::group(['namespace' => 'Page'], function() {
             Route::get('notifications', 'NotificationController@index')->name('user.notifications.index');
             Route::get('notification/details/{id}', 'NotificationController@details')->name('user.notifications.details');
             Route::get('about', 'HomeController@about')->name('user.about');
+
+            Route::get('calendar/{id}', 'UserController@getCalendar')->name('user.get.calendar');
+            Route::get('calendar/detail/{id}', 'UserController@getCalendarDetail')->name('user.get.calendar.detail');
+
+            Route::get('calendar/file/result/{id}', 'UserController@calendarFileResult')->name('file.result');
+            Route::post('calendar/file/result/{id}', 'UserController@postFileResult')->name('file.result');
+
+            Route::group(['prefix' => 'schedule/teacher'], function(){
+
+                Route::get('/', 'NotificationController@schedules')->name('user.schedule.teacher');
+                Route::get('/create','NotificationController@create')->name('schedule.teacher.create');
+                Route::post('/create','NotificationController@store');
+
+                Route::get('/update/{id}','NotificationController@edit')->name('schedule.teacher.update');
+                Route::post('/update/{id}','NotificationController@update');
+
+                Route::get('/delete/{id}','NotificationController@delete')->name('schedule.teacher.delete');
+            });
         });
     });
 });

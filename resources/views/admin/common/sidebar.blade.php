@@ -5,7 +5,7 @@
              alt="AdminLTE Logo"
              class="brand-image img-circle elevation-3"
              style="opacity: .8">
-        <span class="brand-text font-weight-light">Quản lý khóa luận</span>
+        <span class="brand-text font-weight-light">Quản lý đồ án</span>
     </a>
 
     <!-- Sidebar -->
@@ -118,7 +118,15 @@
                 <li class="nav-item">
                     <a href="{{ route('notifications.index') }}" class="nav-link {{ isset($notification_active)  ? $notification_active : '' }}">
                         <i class="fa fa-fw fa-envelope nav-icon"></i>
-                        <p>Quản lý thông báo</p>
+                        <p>Thông báo</p>
+                    </a>
+                </li>
+                @endif
+                @if ($user->can(['toan-quyen-quan-ly', 'danh-sach-lich-hen']))
+                <li class="nav-item">
+                    <a href="{{ route('schedule.student.index') }}" class="nav-link {{ isset($schedule_active)  ? $schedule_active : '' }}">
+                        <i class="fa fa-fw fa-calculator nav-icon"></i>
+                        <p>Lịch hẹn</p>
                     </a>
                 </li>
                 @endif
@@ -157,18 +165,18 @@
                             </a>
                         </li>
                         @endif
-                        <li class="nav-item">
-                            <a href="{{ route('group.permission.index') }}" class="nav-link {{ isset($group_permission)  ? $group_permission : '' }}">
-                                <i class="far fa-circle nav-icon" aria-hidden="true"></i>
-                                <p>Nhóm quyền</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('permission.index') }}" class="nav-link {{ isset($permission_active) ? $permission_active : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p> Quyền </p>
-                            </a>
-                        </li>
+                        {{--<li class="nav-item">--}}
+                            {{--<a href="{{ route('group.permission.index') }}" class="nav-link {{ isset($group_permission)  ? $group_permission : '' }}">--}}
+                                {{--<i class="far fa-circle nav-icon" aria-hidden="true"></i>--}}
+                                {{--<p>Nhóm quyền</p>--}}
+                            {{--</a>--}}
+                        {{--</li>--}}
+                        {{--<li class="nav-item">--}}
+                            {{--<a href="{{ route('permission.index') }}" class="nav-link {{ isset($permission_active) ? $permission_active : '' }}">--}}
+                                {{--<i class="far fa-circle nav-icon"></i>--}}
+                                {{--<p> Quyền </p>--}}
+                            {{--</a>--}}
+                        {{--</li>--}}
                         @if ($user->can(['toan-quyen-quan-ly', 'quan-ly-danh-sach-vai-tro']))
                         <li class="nav-item">
                             <a href="{{ route('role.index') }}" class="nav-link {{ isset($role_active) ? $role_active : '' }}">

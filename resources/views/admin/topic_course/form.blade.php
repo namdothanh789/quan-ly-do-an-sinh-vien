@@ -7,35 +7,8 @@
                     <!-- form start -->
                     <div class="card-body">
                         <div class="form-group">
-                            <label>Đề tài<sup class="text-danger">(*)</sup></label>
-                            <select class="custom-select select2" name="tc_topic_id">
-                                <option value="">Chọn đề tài</option>
-                                @foreach($topics as $topic)
-                                    <option {{old('tc_topic_id', isset($topicCourse->tc_topic_id) ? $topicCourse->tc_topic_id : '') == $topic->id ? 'selected="selected"' : ''}} value="{{$topic->id}}">
-                                        {{$topic->t_title}}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <span class="text-danger"><p class="mg-t-5">{{ $errors->first('tc_topic_id') }}</p></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Niên khóa <sup class="text-danger">(*)</sup></label>
-                            <select class="custom-select" name="tc_course_id">
-                                <option value="">Chọn niên khóa</option>
-                                @foreach($courses as $course)
-                                    <option
-                                            {{old('tc_course_id', isset($topicCourse->tc_course_id) ? $topicCourse->tc_course_id : '') == $course->id ? 'selected="selected"' : ''}}
-                                            value="{{$course->id}}"
-                                    >
-                                        {{$course->c_name}}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <span class="text-danger"><p class="mg-t-5">{{ $errors->first('tc_course_id') }}</p></span>
-                        </div>
-                        <div class="form-group">
                             <label>Khoa / Bộ môn <sup class="text-danger">(*)</sup></label>
-                            <select class="custom-select" name="tc_department_id">
+                            <select class="custom-select department" name="tc_department_id">
                                 <option value="">Chọn khoa bộ môn</option>
                                 @foreach($departments as $key => $department)
                                     @if ($department->parents->isNotEmpty())
@@ -56,6 +29,37 @@
                             </select>
                             <span class="text-danger"><p class="mg-t-5">{{ $errors->first('tc_department_id') }}</p></span>
                         </div>
+
+                        <div class="form-group">
+                            <label>Đề tài<sup class="text-danger">(*)</sup></label>
+                            <select class="custom-select select2 tc_topic_id" name="tc_topic_id">
+                                <option value="">Chọn đề tài</option>
+                                @if (isset($topics))
+                                    @foreach($topics as $topic)
+                                        <option {{old('tc_topic_id', isset($topicCourse->tc_topic_id) ? $topicCourse->tc_topic_id : '') == $topic->id ? 'selected="selected"' : ''}} value="{{$topic->id}}">
+                                            {{$topic->t_title}}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            <span class="text-danger"><p class="mg-t-5">{{ $errors->first('tc_topic_id') }}</p></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Niên khóa <sup class="text-danger">(*)</sup></label>
+                            <select class="custom-select" name="tc_course_id">
+                                <option value="">Chọn niên khóa</option>
+                                @foreach($courses as $course)
+                                    <option
+                                            {{old('tc_course_id', isset($topicCourse->tc_course_id) ? $topicCourse->tc_course_id : '') == $course->id ? 'selected="selected"' : ''}}
+                                            value="{{$course->id}}"
+                                    >
+                                        {{$course->c_name}}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <span class="text-danger"><p class="mg-t-5">{{ $errors->first('tc_course_id') }}</p></span>
+                        </div>
+
                         <div class="form-group">
                             <label>Hội đồng <sup class="text-danger">(*)</sup></label>
                             <select class="custom-select" name="tc_council_id">
@@ -176,3 +180,40 @@
         </div>
     </form>
 </div>
+
+@section('script')
+    <script>
+        $(function () {
+            var url = "{{ route('list.by.department') }}";
+
+            $('.department').change(function (event) {
+
+                event.preventDefault();
+                var id_department = $(this).val();
+
+                if (id_department == '') {
+                    toastr.warning('Vui lòng chọn khoa bộ môn', {timeOut: 3000});
+                    return false;
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data : {
+                        id : id_department
+                    }
+
+                }).done(function(result) {
+
+                    if (result.code == 200) {
+                        $('.tc_topic_id').html(result.html)
+                    }
+
+                });
+
+            })
+        })
+    </script>
+@stop

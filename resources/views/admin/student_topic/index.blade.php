@@ -116,7 +116,7 @@
                                     <th>Giáo viên hướng dẫn</th>
                                     <th>Đề cương</th>
                                     <th>Điểm ĐC</th>
-                                    <th>Quyển khóa luận</th>
+                                    <th>Quyển đồ án</th>
                                     <th>Điểm KL</th>
                                     <th>Điểm BV</th>
                                     <th>Điểm TB</th>
@@ -142,15 +142,15 @@
                                     </td>
                                     <td style="vertical-align: middle">
                                         <p style="margin: 2px">{{ isset($status_outline[$student->st_status_outline]) ? $status_outline[$student->st_status_outline] : 'Chưa nộp' }}</p>
-                                        @if (!empty($student->st_outline_part) && !empty($student->st_status_outline))
-                                        <a href="{!! asset('uploads/documents/' . $student->st_outline_part) !!}" target="_blank" download>download</a>
+                                        @if ($student->result_outline_files()->count() > 0)
+                                        <a href="{{ route('student.topics.view.files', ['id' => $student->id, 'type' => 1]) }}" target="_blank" >Danh sách file {{ $student->result_outline_files()->count() }}</a>
                                         @endif
                                     </td>
                                     <td style="vertical-align: middle">{{ $student->st_point_outline }}</td>
                                     <td style="vertical-align: middle">
                                         <p>{{ isset($status_outline[$student->st_status_thesis_book]) ? $status_outline[$student->st_status_thesis_book] : 'Chưa nộp' }}</p>
-                                        @if (!empty($student->st_thesis_book_part) && !empty($student->st_status_thesis_book))
-                                        <a href="{!! asset('uploads/documents/' . $student->st_thesis_book_part) !!}" target="_blank" download>Dowload</a>
+                                        @if ($student->result_book_files()->count() > 0)
+                                        <a href="{{ route('student.topics.view.files', ['id' => $student->id, 'type' => 2]) }}">Danh sách file {{ $student->result_book_files()->count() }}</a>
                                         @endif
                                     </td>
                                     <td style="vertical-align: middle">{{ $student->st_point_thesis_book }}</td>
@@ -167,6 +167,11 @@
                                         @if ($user->can(['toan-quyen-quan-ly', 'xoa-de-tai-sinh-vien-dang-ky']))
                                         <a class="btn btn-danger btn-sm btn-delete btn-confirm-delete" href="{{ route('student.topics.delete', $student->id) }}">
                                             <i class="fas fa-trash"></i>
+                                        </a>
+                                        @endif
+                                        @if ($user->can(['toan-quyen-quan-ly', 'danh-sach-phan-cong-cong-viec']))
+                                        <a class="btn btn-info btn-sm" href="{{ route('calendar.index', $student->id) }}" title="Phân công công việc">
+                                            <i class="fa fa-fw fa-calendar"></i>
                                         </a>
                                         @endif
                                     </td>

@@ -5,6 +5,20 @@
             <h3>Xin chào : {{ $data['name'] }}<b></b></h3>
         </div>
         <div>
+            @if (isset($data['date_book']))
+                @if (!empty($data['user']))
+                    <p>{{ $data['user']['type'] == 1 ? 'Giáo viên : ' : 'Sinh viên :' }} {{ $data['user']['name'] }}</p>
+
+                @endif
+                <p>Bắt đầu : {{ date('Y-m-d', strtotime($data['date_book'])) }} giờ : {{ date('H:i', strtotime($data['date_book'])) }} phút</p>
+                <p>Kết thúc : {{ date('Y-m-d', strtotime($data['end_date_book'])) }} giờ : {{ date('H:i', strtotime($data['end_date_book'])) }} phút</p>
+                <p>Xác nhận tham gia :
+                    <a href="{{ route('schedule.student.confirm', ['noti_id' => $data['nu_notification_id'], 'user_id' => $data['nu_user_id'], 'type' => 2]) }}">Không tham gia</a>
+                    |
+                    <a href="{{ route('schedule.student.confirm', ['noti_id' => $data['nu_notification_id'], 'user_id' => $data['nu_user_id'], 'type' => 1]) }}">Có tham gia</a></p>
+            @endif
+
+            <p>Nội dung : </p>
             {!! $data['content'] !!}
         </div>
     </div>

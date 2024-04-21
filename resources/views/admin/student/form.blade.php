@@ -51,13 +51,13 @@
                             <div class="tab-pane active" id="settings">
                                 <div class="form-group row">
                                     <label for="inputName" class="col-sm-2 col-form-label">Mã sinh viên <sup class="title-sup">(*)</sup></label>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-10">
                                         <input type="text" class="form-control random_code" id="inputName" placeholder="Mã sinh viên" oninput="if(value.length>15)value=value.slice(0,15)" name="code" value="{{old('code', isset($user->code) ? $user->code : '')}}">
                                         <span class="text-danger "><p class="mg-t-5">{{ $errors->first('code') }}</p></span>
                                     </div>
-                                    <div class="col-sm-2 default mg-t-10 mg-b-10" style="display: inline-block">
-                                        <button class="btn btn-blue btn-info btn-change btn-change-code" >Tạo mã</button>
-                                    </div>
+                                    {{--<div class="col-sm-2 default mg-t-10 mg-b-10" style="display: inline-block">--}}
+                                        {{--<button class="btn btn-blue btn-info btn-change btn-change-code" >Tạo mã</button>--}}
+                                    {{--</div>--}}
                                 </div>
                                 <div class="form-group row">
                                     <label for="inputName" class="col-sm-2 col-form-label">Họ và tên  <sup class="title-sup">(*)</sup></label>
@@ -70,7 +70,7 @@
                                     <label for="inputEmail" class="col-sm-2 col-form-label">Email  <sup class="title-sup">(*)</sup></label>
                                     <div class="col-sm-10">
                                         <input type="email" class="form-control" id="inputEmail" placeholder="Email" name="email" value="{{old('email', isset($user->email) ? $user->email : '')}}">
-                                        <span class="text-danger "><p class="mg-t-5">{{ $errors->first('name') }}</p></span>
+                                        <span class="text-danger "><p class="mg-t-5">{{ $errors->first('email') }}</p></span>
                                     </div>
                                 </div>
                                 <div class="form-group row {{ $errors->has('password') ? 'has-error' : '' }}">
