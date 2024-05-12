@@ -8,24 +8,25 @@ use App\Models\Notification;
 use App\Models\NotificationUser;
 use App\Models\Course;
 use App\Models\User;
-use App\Http\Requests\NotificationRequest;
+use App\Http\Requests\ScheduleStudentRequest;
 use App\Helpers\MailHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use League\Flysystem\Exception;
 
-class NotificationController extends Controller
+class ScheduleStudentController extends Controller
 {
     public function __construct(Notification $notification, Course $course, User $user)
     {
         view()->share([
-            'notification_active' => 'active',
+            'schedule_active' => 'active',
             'courses' => $course->orderBy('id', 'DESC')->get(),
-            'types'  => $notification::TYPES,
-            'sendTo' => $notification::SEND_TO,
-            'users' => $user->all(),
-            'status' => Notification::STATUS
+            'users' => $user->where('type', User::STUDENT)->get(),
+            'status' => Notification::STATUS,
+            'schedule_types' => Notification::SCHEDULE_TYPES,
         ]);
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -34,27 +35,19 @@ class NotificationController extends Controller
     public function index(Request $request)
     {
         //
-        $notifications = Notification::select('id', 'n_course_id', 'n_title', 'n_type', 'n_status', 'n_send_to')->with('course');
-        if ($request->n_title) {
-            $notifications->where('n_title', 'like', '%'.$request->n_title.'%');
-        }
-        if ($request->n_course_id) {
-            $notifications->where('n_course_id', $request->n_course_id);
-        }
-        if ($request->n_type) {
-            $notifications->where('n_type', $request->n_type);
-        }
-        if ($request->n_send_to) {
-            $notifications->where('n_send_to', $request->n_send_to);
-        }
-        if ($request->n_status) {
-            $notifications->where('n_status', $request->n_status);
+        $notifications = Notification::select('*')->with(['notificationUsers' => function ($query) {
+            $query->with('user');
+        }, 'user']);
+
+        $user = Auth::user();
+        if ($user->hasRole(User::ROLE_USERS)) {
+            $notifications->where('n_user_id', $user->id);
         }
 
-        $notifications = $notifications->whereNotIn('n_type', [6, 7])->orderByDesc('id')->paginate(NUMBER_PAGINATION);
-
-        return view('admin.notification.index', compact('notifications'));
+        $notifications = $notifications->where('n_type', 6)->orderByDesc('id')->paginate(NUMBER_PAGINATION);
+        return view('admin.schedule.index', compact('notifications'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -64,7 +57,7 @@ class NotificationController extends Controller
     public function create()
     {
         //
-        return view('admin.notification.create');
+        return view('admin.schedule.create');
     }
 
     /**
@@ -73,7 +66,7 @@ class NotificationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(NotificationRequest $request)
+    public function store(ScheduleStudentRequest $request)
     {
         //
         \DB::beginTransaction();
@@ -85,6 +78,7 @@ class NotificationController extends Controller
             $data['created_at'] = Carbon::now();
             $data['updated_at'] = Carbon::now();
             $data['n_user_id'] = $admin->id;
+            $data['n_type'] = 6;
 
             $id = Notification::insertGetId($data);
             if ($id) {
@@ -117,19 +111,20 @@ class NotificationController extends Controller
 
                     NotificationUser::create($notificationUser);
                     // send email
-                    if ($request->n_status == 1) {
-                        $dataMail = [
-                            'subject' => $data['n_title'],
-                            'name' => $user->name,
-                            'email' => $user->email,
-                            'content' => $data['n_content'],
-                            'user' => $admin->toArray()
-                        ];
-                        if ($request->n_from_date) {
-                            $dataMail['date_book'] = $request->n_from_date;
-                        }
-                        MailHelper::sendMailNotification($dataMail);
+                    $dataMail = [
+                        'subject' => 'Thông báo lịch hẹn với giáo viên '.$admin->name,
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'content' => $data['n_content'],
+                        'user' => $admin->toArray(),
+                        'nu_notification_id' => $id,
+                        'nu_user_id' => $user->id,
+                    ];
+                    if ($request->n_from_date) {
+                        $dataMail['date_book'] = $request->n_from_date;
+                        $dataMail['end_date_book'] = $request->n_end_date;
                     }
+                    MailHelper::sendMailNotification($dataMail);
                 }
             }
             \DB::commit();
@@ -157,7 +152,7 @@ class NotificationController extends Controller
         }
 
         $viewData = ['notification' => $notification, 'notificationUsers' => $notificationUsers];
-        return view('admin.notification.edit', $viewData);
+        return view('admin.schedule.edit', $viewData);
     }
 
     /**
@@ -167,7 +162,7 @@ class NotificationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(NotificationRequest $request, $id)
+    public function update(ScheduleStudentRequest $request, $id)
     {
         //
         \DB::beginTransaction();
@@ -179,6 +174,7 @@ class NotificationController extends Controller
 
             $data['n_user_id'] = $admin->id;
             $data['updated_at'] = Carbon::now();
+            $data['n_type'] = 6;
             $notification = Notification::find($id);
 
             if ($notification) {
@@ -203,7 +199,7 @@ class NotificationController extends Controller
                         $notificationUser = [
                             'nu_notification_id' => $id,
                             'nu_user_id' => $user->id,
-                            'nu_type_user' => $data['n_send_to'],
+                            'nu_type_user' => $user->type,
                             'nu_status' => 1,
                         ];
 
@@ -216,19 +212,20 @@ class NotificationController extends Controller
                         }
 
                         // send email
-                        if ($request->n_status == 1) {
-                            $dataMail = [
-                                'subject' => $data['n_title'],
-                                'name' => $user->name,
-                                'email' => $user->email,
-                                'content' => $data['n_content'],
-                                'user' => $admin->toArray()
-                            ];
-                            if ($request->n_from_date) {
-                                $dataMail['date_book'] = $request->n_from_date;
-                            }
-                            MailHelper::sendMailNotification($dataMail);
+                        $dataMail = [
+                            'subject' => 'Thông báo lịch hẹn với giáo viên '.$admin->name,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            'content' => $data['n_content'],
+                            'user' => $admin->toArray(),
+                            'nu_notification_id' => $id,
+                            'nu_user_id' => $user->id,
+                        ];
+                        if ($request->n_from_date) {
+                            $dataMail['date_book'] = $request->n_from_date;
+                            $dataMail['end_date_book'] = $request->n_end_date;
                         }
+                        MailHelper::sendMailNotification($dataMail);
                     }
                 }
             }
@@ -259,6 +256,40 @@ class NotificationController extends Controller
             return redirect()->back()->with('success', 'Xóa thành công');
         } catch (\Exception $exception) {
             return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể xóa dữ liệu');
+        }
+    }
+
+    public function show($id)
+    {
+        $status = [
+            0 => 'Chờ xác nhận',
+            1 => 'Tham gia',
+            2 => 'Không tham gia'
+        ];
+        $notification = Notification::find($id);
+
+        if (!$notification) {
+            return redirect()->back()->with('error', 'Dữ liệu không tồn tại');
+        }
+
+        return view('admin.schedule.show', compact('notification', 'status'));
+    }
+
+    public function confirm(Request $request, $noti_id, $user_id)
+    {
+        $user = NotificationUser::where(['nu_notification_id' => $noti_id, 'nu_user_id' => $user_id])->first();
+
+        if (!$user) {
+            return abort(404);
+        }
+        $user->nu_status = $request->type;
+
+        try {
+            $user->save();
+            $title = $request->type == 1 ? 'Tham gia' : 'Không tham gia';
+            return view('page.notifications.confirm', compact('title'));
+        } catch (\Exception $exception) {
+            return abort(404);
         }
     }
 }

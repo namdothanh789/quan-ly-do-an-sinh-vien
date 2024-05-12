@@ -137,4 +137,20 @@ class TopicController extends Controller
             return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể xóa dữ liệu');
         }
     }
+
+    public function getByDepartment(Request $request)
+    {
+        if($request->ajax()) {
+
+            $id = $request->id;
+            $topics = Topic::where('t_department_id', $id)->get();
+
+            $html = view("admin.topic.topic", compact('topics'))->render();
+
+            return response([
+                'html' => $html,
+                'code' => 200
+            ]);
+        }
+    }
 }

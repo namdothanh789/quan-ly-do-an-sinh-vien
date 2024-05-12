@@ -8,6 +8,7 @@ use App\Models\Group;
 use App\Models\GroupStudent;
 use App\Models\User;
 use App\Http\Requests\GroupRequest;
+use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
@@ -25,8 +26,14 @@ class GroupController extends Controller
     public function index()
     {
         //
-        $groups = Group::with('studentGroups')->orderByDesc('id')->paginate(NUMBER_PAGINATION);
+        $groups = Group::with('studentGroups', 'user');
 
+        $user = Auth::user();
+        if ($user->hasRole(User::ROLE_USERS)) {
+            $groups->where('user_id', $user->id);
+        }
+
+        $groups = $groups->orderByDesc('id')->paginate(NUMBER_PAGINATION);
         return view('admin.group.index', compact('groups'));
     }
 
@@ -53,6 +60,9 @@ class GroupController extends Controller
         \DB::beginTransaction();
         try {
             $data = $request->except('_token', 'submit', 'students');
+            $user = Auth::user();
+            $data['user_id'] = $user->id;
+
             $group = Group::create($data);
             if (!empty($request->students)) {
                 $group->studentGroups()->sync($request->students);
@@ -98,6 +108,10 @@ class GroupController extends Controller
         \DB::beginTransaction();
         try {
             $data = $request->except('_token', 'submit', 'students');
+
+            $user = Auth::user();
+            $data['user_id'] = $user->id;
+
             $group = Group::find($id);
             if (!empty($request->students)) {
                 $group->studentGroups()->sync($request->students);

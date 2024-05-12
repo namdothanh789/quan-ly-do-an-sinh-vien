@@ -25,14 +25,14 @@ class UpdateThesisBookRequest extends FormRequest
     {
         return [
             //
-            'st_thesis_book' => 'required | max:225',
+            'result_book_file_id' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'st_thesis_book.required' => 'Vui lòng nhập vào dữ liệu',
+            'result_book_file_id.required' => 'Vui lòng chọn file cần nhận sét',
         ];
     }
 }

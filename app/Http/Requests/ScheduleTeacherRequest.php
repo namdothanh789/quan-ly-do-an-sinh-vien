@@ -3,10 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Request;
-use App\Models\User;
 
-class NotificationRequest extends FormRequest
+class ScheduleTeacherRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +21,16 @@ class NotificationRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(Request $request)
+    public function rules()
     {
         $rule = [
             'n_title' => ['required'],
             'n_content' =>['required'],
+            'teacher_id' =>['required'],
+            'n_from_date' =>'required',
+            'n_end_date' =>['required'],
         ];
-//        if ($request->n_send_to == User::STUDENT) {
-//            $rule['n_course_id'] = ['required'];
-//        }
+
         return $rule;
     }
 
@@ -39,8 +38,10 @@ class NotificationRequest extends FormRequest
     {
         return [
             'n_title.required' => 'Dữ liệu không thể để trống',
-            'n_course_id.required' => 'Dữ liệu gửi cho sinh viên vui lòng chọn niên khóa',
+            'teacher_id.required' => 'Dữ liệu không thể để trống',
             'n_content.required' => 'Dữ liệu không thể để trống',
+            'n_from_date.required' => 'Dữ liệu không thể để trống',
+            'n_end_date.required' => 'Dữ liệu không thể để trống',
         ];
     }
 }

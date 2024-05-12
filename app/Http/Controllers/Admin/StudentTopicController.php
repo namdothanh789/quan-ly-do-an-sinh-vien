@@ -8,6 +8,7 @@ use App\Models\Department;
 use App\Models\Course;
 use App\Models\User;
 use App\Models\StudentTopic;
+use App\Models\ResultFile;
 use App\Http\Requests\UpdateOutlineRequest;
 use App\Http\Requests\UpdateThesisBookRequest;
 use App\Helpers\MailHelper;
@@ -32,7 +33,9 @@ class StudentTopicController extends Controller
     {
         $studentTopics = StudentTopic::with(['student', 'topic' => function($topic) {
             $topic->with(['topic', 'department']);
-        }, 'teacher', 'course']);
+        }, 'teacher', 'course', 'result_outline_files', 'result_book_files']);
+
+
         if ($request->code) {
             $code = $request->code;
             $studentTopics->whereIn('st_student_id', function ($query) use ($code) {
@@ -53,6 +56,10 @@ class StudentTopicController extends Controller
         if ($request->tc_course_id) {
             $studentTopics->where('st_course_id', $request->tc_course_id);
         }
+        $user = Auth::user();
+        if ($user->hasRole(User::ROLE_USERS)) {
+            $studentTopics->where('st_teacher_id', $user->id);
+        }
 
         $studentTopics = $studentTopics->orderByDesc('id')->paginate(NUMBER_PAGINATION);
 
@@ -67,7 +74,8 @@ class StudentTopicController extends Controller
     {
         $student = StudentTopic::with(['student', 'topic' => function($topic) {
             $topic->with(['topic', 'department']);
-        }, 'teacher'])->find($id);
+        }, 'teacher', 'result_outline_files', 'result_book_files'])->find($id);
+
 
         if (!$student) {
             return redirect()->route('student.topics.index')->with('danger', 'Dữ liệu không tồn tại');
@@ -88,20 +96,45 @@ class StudentTopicController extends Controller
             return redirect()->back()->with('danger', 'Dữ liệu không tồn tại');
         }
 
-        $attributes = $request->except('outline_part', 'outline', '_token');
+        $result_file = ResultFile::where('id', $request->result_outline_file_id)->first();
+
+        if (!$result_file) {
+            return redirect()->back()->with('danger', 'Dữ liệu không tồn tại');
+        }
+
+        $attributes = $request->except('outline_part', 'outline', '_token', 'result_outline_file_id', 'rf_point', 'rf_comment');
 
         if($request->hasfile('outline_part'))
         {
             $file = $request->file('outline_part');
-            $st_outline_part = date('YmdHms').'-'.$file->getClientOriginalName();
+
+            $part_file_feedback = date('YmdHms').'-'.$file->getClientOriginalName();
             $file->move(public_path().'/uploads/documents/', date('YmdHms').$file->getClientOriginalName());
 
-            $attributes['st_outline_part'] = $st_outline_part;
+            $attributes['rf_part_file_feedback'] = $part_file_feedback;
         }
+
+        if ($request->rf_point) {
+            $attributes['rf_point'] = $request->rf_point;
+        }
+
+        if ($request->rf_comment) {
+            $attributes['rf_comment'] = $request->rf_comment;
+        }
+
 
         \DB::beginTransaction();
         try {
-            if ($student->update($attributes)) {
+            if ($result_file->update($attributes)) {
+
+                $outline = ['st_status_outline' => $result_file->rf_status];
+                if ($result_file->rf_status == 2) {
+                    $outline['st_point_outline'] = $result_file->rf_point;
+                } else if ($result_file->rf_status == 3) {
+                    $outline['st_point_outline'] = 0;
+                }
+                $student->update($outline);
+
                 $status = StudentTopic::STATUS_OUTLINE;
                 if ($student->st_status_outline) {
                     $dataMail = [
@@ -110,11 +143,11 @@ class StudentTopicController extends Controller
                         'name_student' => isset($student->student) ? $student->student->name : '',
                         'email' => isset($student->student) ? $student->student->email : '',
                         'topic' => $student->topic->topic->t_title,
-                        'title' => $student->st_outline,
-                        'link_download' => $student->st_outline_part,
-                        'comments' => $student->st_comment_outline,
+                        'title' => $result_file->rf_title,
+                        'link_download' => $result_file->rf_part_file_feedback,
+                        'comments' => $result_file->rf_comment,
                         'status' => isset($status[$student->st_status_outline]) ? $status[$student->st_status_outline] : '',
-                        'point'  => $student->st_point_outline,
+                        'point'  => $result_file->rf_point,
                         'outline_status' => 1,
                         'teacher_status' => 1
                     ];
@@ -128,7 +161,6 @@ class StudentTopicController extends Controller
             \DB::rollBack();
             return redirect()->back()->with('error', 'Đã xảy ra lỗi khi lưu dữ liệu');
         }
-
     }
 
     public function updateThesisBook(UpdateThesisBookRequest $request, $id)
@@ -142,33 +174,58 @@ class StudentTopicController extends Controller
             return redirect()->back()->with('danger', 'Dữ liệu không tồn tại');
         }
 
-        $attributes = $request->except('thesis_book_part', 'book', '_token');
+        $result_file = ResultFile::where('id', $request->result_book_file_id)->first();
+
+        if (!$result_file) {
+            return redirect()->back()->with('danger', 'Dữ liệu không tồn tại');
+        }
+
+        $attributes = $request->except('outline_part', 'outline', '_token', 'result_outline_file_id', 'rf_point', 'rf_comment');
+
 
         if($request->hasfile('thesis_book_part'))
         {
             $file = $request->file('thesis_book_part');
-            $st_thesis_book_part = date('YmdHms').'-'.$file->getClientOriginalName();
+
+            $part_file_feedback = date('YmdHms').'-'.$file->getClientOriginalName();
             $file->move(public_path().'/uploads/documents/', date('YmdHms').$file->getClientOriginalName());
 
-            $attributes['st_thesis_book_part'] = $st_thesis_book_part;
+            $attributes['rf_part_file_feedback'] = $part_file_feedback;
+        }
+
+        if ($request->rf_point) {
+            $attributes['rf_point'] = $request->rf_point;
+        }
+
+        if ($request->rf_comment) {
+            $attributes['rf_comment'] = $request->rf_comment;
         }
         
         \DB::beginTransaction();
         try {
-            if ($student->update($attributes)) {
+            if ($result_file->update($attributes)) {
+
+                $outline = ['st_status_thesis_book' => $result_file->rf_status];
+                if ($result_file->rf_status == 2) {
+                    $outline['st_point_thesis_book'] = $result_file->rf_point;
+                } else if ($result_file->rf_status == 3) {
+                    $outline['st_point_thesis_book'] = 0;
+                }
+                $student->update($outline);
+
                 $status = StudentTopic::STATUS_OUTLINE;
                 if ($student->st_status_thesis_book) {
                     $dataMail = [
-                        'subject' => 'Giáo viên hướng dẫn đã phản hồi khóa luận của bạn',
+                        'subject' => 'Giáo viên hướng dẫn đã phản hồi đồ án của bạn',
                         'name_teacher' => $user->name,
                         'name_student' => isset($student->student) ? $student->student->name : '',
                         'email' => isset($student->student) ? $student->student->email : '',
                         'topic' => $student->topic->topic->t_title,
-                        'title' => $student->st_thesis_book,
-                        'link_download' => $student->st_thesis_book_part,
-                        'comments' => $student->st_comment_thesis_book,
+                        'title' => $result_file->rf_title,
+                        'link_download' => $result_file->rf_part_file_feedback,
+                        'comments' => $result_file->rf_comment,
                         'status' => isset($status[$student->st_status_thesis_book]) ? $status[$student->st_status_thesis_book] : '',
-                        'point'  => $student->st_point_thesis_book,
+                        'point'  => $result_file->rf_point,
                         'outline_status' => 0,
                         'teacher_status' => 1
                     ];
@@ -199,7 +256,7 @@ class StudentTopicController extends Controller
                 $status = StudentTopic::STATUS;
                 if ($student->st_status) {
                     $dataMail = [
-                        'subject' => 'Thông báo kết quả và đánh giá đề tài khóa luận',
+                        'subject' => 'Thông báo kết quả và đánh giá đề tài đồ án',
                         'name_teacher' => $user->name,
                         'name_student' => isset($student->student) ? $student->student->name : '',
                         'email' => isset($student->student) ? $student->student->email : '',
@@ -242,5 +299,17 @@ class StudentTopicController extends Controller
             \DB::rollBack();
             return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể xóa dữ liệu');
         }
+    }
+
+    public function viewFileReport(Request $request, $id)
+    {
+        $student = StudentTopic::with(['student', 'topic' => function($topic) {
+            $topic->with(['topic', 'department']);
+        }, 'teacher', 'result_outline_files', 'result_book_files'])->find($id);
+
+        $type = $request->type ?? 1;
+        $result_files = ResultFile::where(['rf_student_topic_id' => $id, 'rf_type' => $type])->get();
+
+        return view('admin.student_topic.view_files', compact('result_files', 'type', 'student'));
     }
 }

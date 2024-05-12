@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateOutlineRequest extends FormRequest
+class GroupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,16 +23,19 @@ class UpdateOutlineRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-            'result_outline_file_id' => 'required',
+        $rules = [
+            'name'     => 'required|unique:groups,name,'.$this->id,
+            'students.*' => ['required'],
         ];
+        return $rules;
     }
 
     public function messages()
     {
         return [
-            'result_outline_file_id.required' => 'Vui lòng chọn file đề cương cần nhận sét',
+            'name.required' => 'Vui lòng nhập vào dữ liệu',
+            'name.max' => 'Vượt quá số ký tự cho phép',
+            'students.required' => 'Dữ liệu không được phép để trống.',
         ];
     }
 }

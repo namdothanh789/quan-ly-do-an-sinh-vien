@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateOutlineRequest extends FormRequest
+class CalendarFileResultRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,14 +25,15 @@ class UpdateOutlineRequest extends FormRequest
     {
         return [
             //
-            'result_outline_file_id' => 'required',
+            'file_result' => 'required|mimes:docx,doc,zip,pdf',
         ];
     }
 
     public function messages()
     {
         return [
-            'result_outline_file_id.required' => 'Vui lòng chọn file đề cương cần nhận sét',
+            'file_result.required' => 'Dữ liệu không được phép để trống.',
+            'images.mimes'         => 'Vui lòng nhập đúng định dạng file',
         ];
     }
 }

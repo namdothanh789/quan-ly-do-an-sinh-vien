@@ -33,7 +33,9 @@
                                     <th scope="col">STT</th>
                                     <th scope="col">Tiêu đề </th>
                                     <th scope="col">Giáo viên</th>
-                                    <th scope="col">Ngày hẹn</th>
+                                    <th>Loại </th>
+                                    <th scope="col">Thời gian bắt đầu</th>
+                                    <th scope="col">Thời gian kết thúc</th>
                                     <th scope="col">Nội dung </th>
                                     <th scope="col">Ngày tạo</th>
                                     <th class="text-center">Hành động</th>
@@ -53,8 +55,12 @@
                                                 @endforeach
                                             @endif
                                         </td>
+                                        <td style="vertical-align: middle">{{ isset($schedule_types[$notification->n_schedule_type]) ? $schedule_types[$notification->n_schedule_type] : '' }}</td>
                                         <td>
                                             {{ $notification->n_from_date }}
+                                        </td>
+                                        <td>
+                                            {{ $notification->n_end_date }}
                                         </td>
                                         <td><a href="">Nội dung</a></td>
                                         <td>{{ $notification->created_at }}</td>

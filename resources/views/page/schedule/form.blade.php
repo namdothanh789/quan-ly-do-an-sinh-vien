@@ -13,32 +13,55 @@
                                 <span class="text-danger "><p class="mg-t-5">{{ $errors->first('n_title') }}</p></span>
                             </div>
                         </div>
-                        <div class="form-group {{ $errors->first('users') ? 'has-error' : '' }}">
-                            <label for="inputEmail3" class="control-label default">Chọn giáo viên <sup class="text-danger">(*)</sup></label>
-                            <div>
-                                <select class="form-control" id="users" name="teacher_id">
-                                    <option value="">Chọn giáo viên</option>
-                                    @foreach($users as $key => $user)
-                                        <option value="{{ $user->id }}"
-                                            @if(isset($notification->notificationUsers))
-                                                @foreach($notification->notificationUsers as $item)
-                                                    {{ $user->id == $item->user->id ? 'selected' : ''}}
-                                                @endforeach
-                                            @endif
-                                        >
-                                            {{  $user->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('teacher_id') }}</p></span>
+                       <div class="row">
+                           <div class="form-group {{ $errors->first('users') ? 'has-error' : '' }} col-md-6">
+                               <label for="inputEmail3" class="control-label default">Chọn giáo viên <sup class="text-danger">(*)</sup></label>
+                               <div>
+                                   <select class="form-control" id="users" name="teacher_id">
+                                       <option value="">Chọn giáo viên</option>
+                                       @foreach($users as $key => $user)
+                                           <option value="{{ $user->id }}"
+                                           @if(isset($notification->notificationUsers))
+                                               @foreach($notification->notificationUsers as $item)
+                                                   {{ $user->id == $item->user->id ? 'selected' : ''}}
+                                                       @endforeach
+                                                   @endif
+                                           >
+                                               {{  $user->name }}
+                                           </option>
+                                       @endforeach
+                                   </select>
+                                   <span class="text-danger "><p class="mg-t-5">{{ $errors->first('teacher_id') }}</p></span>
+                               </div>
+                           </div>
+                           <div class="form-group col-md-6" >
+                               <label for="inputName2" class="col-form-label default">Loại cuộc hẹn </label>
+                               <div>
+                                   <select name="n_schedule_type" class="form-control">
+                                       @foreach($schedule_types as $key => $type)
+                                           <option  {{old('n_schedule_type', isset($notification) ? $notification->n_schedule_type : '') == $key ? 'selected=selected' : '' }}  value="{{$key}}">{{$type}}</option>
+                                       @endforeach
+                                   </select>
+                                   <span class="text-danger"><p class="mg-t-5">{{ $errors->first('n_schedule_type') }}</p></span>
+                               </div>
+                           </div>
+                       </div>
+                        <div class="row">
+                            <div class="form-group col-md-6" >
+                                <label for="inputName2" class="col-form-label">Thời gian bắt đầu <sup class="text-danger">(*)</sup></label>
+                                <div>
+                                    <input type="datetime-local" name="n_from_date" class="form-control" value="{{ isset($notification) ? $notification->n_from_date : '' }}">
+                                </div>
+                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('n_from_date') }}</p></span>
                             </div>
-                        </div>
-                        <div class="form-group" >
-                            <label for="inputName2" class="col-form-label">Thời gian hẹn <sup class="text-danger">(*)</sup></label>
-                            <div>
-                                <input type="datetime-local" name="n_from_date" class="form-control" value="{{ isset($notification) ? $notification->n_from_date : '' }}">
+
+                            <div class="form-group col-md-6" >
+                                <label for="inputName2" class="col-form-label">Thời gian kết thúc <sup class="text-danger">(*)</sup></label>
+                                <div>
+                                    <input type="datetime-local" name="n_end_date" class="form-control" value="{{ isset($notification) ? $notification->n_end_date : '' }}">
+                                </div>
+                                <span class="text-danger "><p class="mg-t-5">{{ $errors->first('n_end_date') }}</p></span>
                             </div>
-                            <span class="text-danger "><p class="mg-t-5">{{ $errors->first('n_from_date') }}</p></span>
                         </div>
                         <div class="form-group {{ $errors->first('n_content') ? 'has-error' : '' }}">
                             <label for="inputEmail3" class="control-label default">Nội dung <sup class="text-danger">(*)</sup></label>
