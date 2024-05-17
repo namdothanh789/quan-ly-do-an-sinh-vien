@@ -76,6 +76,11 @@
                             <span>Thông tin tài khoản</span>
                         </a>
 
+                        <a href="{{ route('user.schedule.calendar') }}" class="dropdown-item">
+                            <i class="ni ni-calendar-grid-58"></i>
+                            <span>Lịch</span>
+                        </a>
+
                         <a href="{{ route('user.schedule.teacher') }}" class="dropdown-item">
                             <i class="ni ni-calendar-grid-58"></i>
                             <span>Đăng ký lịch hẹn</span>

@@ -25,6 +25,7 @@ class User extends Authenticatable
     const TEACHER = 1;
     const STUDENT = 2;
     const ROLE_STUDENT = 5;
+    const ROLE_USERS = ['gvhd', 'gv', 'bcn-khoa'];
 
     /**
      * The attributes that are mass assignable.

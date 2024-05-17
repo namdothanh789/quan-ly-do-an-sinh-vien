@@ -74,4 +74,14 @@ class StudentTopic extends Model
     {
         return $this->hasOne(Course::class, 'id', 'st_course_id');
     }
+
+    public function result_outline_files()
+    {
+        return $this->hasMany(ResultFile::class, 'rf_student_topic_id', 'id')->where('rf_type', 1);
+    }
+
+    public function result_book_files()
+    {
+        return $this->hasMany(ResultFile::class, 'rf_student_topic_id', 'id')->where('rf_type', 2);
+    }
 }

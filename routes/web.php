@@ -280,6 +280,9 @@ Route::group(['namespace' => 'Page'], function() {
                 Route::post('/update/{id}','NotificationController@update');
 
                 Route::get('/delete/{id}','NotificationController@delete')->name('schedule.teacher.delete');
+
+                Route::get('/calendar', 'NotificationController@calendar')->name('user.schedule.calendar');
+                Route::get('/calendar/show/{id}', 'NotificationController@show')->name('user.schedule.calendar.show');
             });
         });
     });

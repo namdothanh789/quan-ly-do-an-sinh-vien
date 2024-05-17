@@ -11,7 +11,7 @@ class NotificationComposer
     public function compose(View $view)
     {
         $user = Auth::guard('students')->user();
-        $notifications = Notification::where(['n_course_id' => $user->course_id, 'n_status' => 1])->whereIn('id', function ($query) use($user) {
+        $notifications = Notification::where(['n_status' => 1, 'n_watched' => 0])->whereIn('id', function ($query) use($user) {
             $query->from('notification_users')
                 ->select('nu_notification_id')
                 ->where('nu_user_id', $user->id);

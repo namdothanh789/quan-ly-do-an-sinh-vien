@@ -186,3 +186,16 @@ if (!function_exists('formatTime')) {
     }
 }
 
+function showColorCalendar($notification)
+{
+    if ($notification->n_status == 1) {
+        return '#28a745';
+    }
+    $currentTime = Carbon::now();
+    if ($notification->n_status == 2 && $notification->n_from_date > $currentTime) {
+        return '#ffc107';
+    }
+
+    return '#dc3545';
+}
+
