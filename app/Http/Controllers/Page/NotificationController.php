@@ -249,7 +249,7 @@ class NotificationController extends Controller
             1 => 'Tham gia',
             2 => 'Không tham gia'
         ];
-        $notification = Notification::find($id);
+        $notification = Notification::with('notificationUsers')->find($id);
 
         if (!$notification) {
             return redirect()->back()->with('error', 'Dữ liệu không tồn tại');

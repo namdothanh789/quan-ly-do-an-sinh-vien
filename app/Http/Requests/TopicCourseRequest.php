@@ -34,23 +34,23 @@ class TopicCourseRequest extends FormRequest
             'tc_registration_number' => ['required'],
             'tc_start_outline' => ['required'],
             'tc_end_outline' => ['required'],
-            'tc_start_thesis_book' => ['required'],
-            'tc_end_thesis_book' => ['required'],
+//            'tc_start_thesis_book' => ['required'],
+//            'tc_end_thesis_book' => ['required'],
         ];
 
-//        if ($request->submit == 'create') {
-//            $rules['tc_start_time'] = 'nullable|after:today';
-//            if ($this->request->has('tc_start_time') && $this->request->get('tc_start_time') != $this->request->get('tc_end_time')) {
-//                $rules['tc_end_time'] = 'nullable|after:tc_start_time';
-//            } else {
-//                $rules['tc_end_time'] = 'nullable|after:today';
-//            }
-//        }
-//        if ($request->submit == 'update') {
-//            if ($this->request->has('tc_start_time') && $this->request->get('tc_start_time') != $this->request->get('tc_end_time')) {
-//                $rules['tc_end_time'] = 'nullable|after:tc_start_time';
-//            }
-//        }
+        if ($request->submit == 'create') {
+            $rules['tc_start_outline'] = 'required|after:today';
+            if ($this->request->has('tc_start_outline') && $this->request->get('tc_start_outline') != $this->request->get('tc_end_outline')) {
+                $rules['tc_end_outline'] = 'required|after:tc_start_outline';
+            } else {
+                $rules['tc_end_outline'] = 'required|after:today';
+            }
+        }
+        if ($request->submit == 'update') {
+            if ($this->request->has('tc_start_outline') && $this->request->get('tc_start_outline') != $this->request->get('tc_end_outline')) {
+                $rules['tc_end_outline'] = 'required|after:tc_start_outline';
+            }
+        }
 
         return $rules;
     }
@@ -66,8 +66,10 @@ class TopicCourseRequest extends FormRequest
             'tc_registration_number.required' => 'Dữ liệu không được phép để trống.',
             'tc_start_outline.required'            => 'Dữ liệu không được phép để trống',
             'tc_end_outline.required'            => 'Dữ liệu không được phép để trống',
-            'tc_start_thesis_book.required'            => 'Dữ liệu không được phép để trống',
-            'tc_end_thesis_book.required'            => 'Dữ liệu không được phép để trống',
+            'tc_start_outline.after'            => 'Ngày bắt đầu phải lớn hơn ngày hiện tại',
+            'tc_end_outline.after'            => 'Ngày kết thúc phải lớn hơn ngày bắt đầu và ngày hiện tại',
+//            'tc_start_thesis_book.required'            => 'Dữ liệu không được phép để trống',
+//            'tc_end_thesis_book.required'            => 'Dữ liệu không được phép để trống',
         ];
     }
 }

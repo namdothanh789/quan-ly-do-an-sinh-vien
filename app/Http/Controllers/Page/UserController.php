@@ -70,12 +70,13 @@ class UserController extends Controller
         ];
         $studentTopic = StudentTopic::with(['topic' => function($topic) {
             $topic->with(['topic', 'department']);
-        }, 'teacher'])->where($param)->first();
+        }, 'teacher', 'result_outline_files'])->where($param)->first();
 
         if (!$studentTopic)
         {
             return redirect()->back()->with('error', 'Chưa đăng ký đề tài');
         }
+
         $numberStudent = 0;
         if ($studentTopic) {
             $numberStudent = StudentTopic::where(['st_course_id' =>  $user->course_id, 'st_topic_id' => $studentTopic->st_topic_id])->count();

@@ -27,7 +27,7 @@
                         <div class="card-header">
                             <div class="card-tools">
                                 <div class="btn-group">
-                                    @if ($user->can(['toan-quyen-quan-ly', 'tao-moi-lich-hen']))
+                                    @if ($user->can(['toan-quyen-quan-ly', 'them-moi-lich-hen']))
                                     <a href="{{ route('schedule.student.create') }}"><button type="button" class="btn btn-block btn-info"><i class="fa fa-plus"></i> Tạo mới</button></a>
                                     @endif
                                 </div>

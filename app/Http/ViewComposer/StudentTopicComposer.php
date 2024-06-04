@@ -21,7 +21,8 @@ class StudentTopicComposer
             'st_student_id' => $user->id,
             'st_course_id' => $user->course_id,
         ];
-        $studentTopic = StudentTopic::with('topic')->where($param)->first();
+        $studentTopic = StudentTopic::with('topic', 'result_outline_files')->where($param)->first();
+
         $data = [
             'sudentTopics' => $sudentTopics,
             'studentTopic' => $studentTopic,

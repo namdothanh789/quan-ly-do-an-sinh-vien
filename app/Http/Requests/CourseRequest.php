@@ -26,9 +26,22 @@ class CourseRequest extends FormRequest
     {
         $rules = [
             'c_name'     => 'required|unique:courses,c_name,'.$this->id,
-            'c_start_time' => 'required',
-            'c_end_time' => 'required'
         ];
+
+        if ($request->submit == 'create') {
+            $rules['c_start_time'] = 'required|after:today';
+            if ($this->request->has('c_start_time') && $this->request->get('c_start_time') != $this->request->get('c_end_time')) {
+                $rules['c_end_time'] = 'required|after:c_start_time';
+            } else {
+                $rules['c_end_time'] = 'required|after:today';
+            }
+        }
+        if ($request->submit == 'update') {
+            if ($this->request->has('c_start_time') && $this->request->get('c_start_time') != $this->request->get('c_start_time')) {
+                $rules['c_end_time'] = 'required|after:c_start_time';
+            }
+        }
+
         return $rules;
     }
 

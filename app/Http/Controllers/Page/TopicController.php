@@ -111,7 +111,7 @@ class TopicController extends Controller
         $user = Auth::guard('students')->user();
         // lấy danh sách đề tài thuộc khoa và kỳ học
         $topics = TopicCourse::with(['topic', 'course', 'council', 'department', 'teacher', 'studentTopics' => function ($students) {
-            $students->with('students');
+            $students->with('students', 'result_outline_files');
         }])->where(['tc_course_id' => $user->course_id, 'tc_department_id' => $user->department_id, 'tc_status' => 1])->get();
 
         return view('page.topic.register_result', compact('topics'));

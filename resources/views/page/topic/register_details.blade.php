@@ -27,38 +27,6 @@
                 <br />
                 <div class="row">
                     <div class="col-6" style="flex-basis: unset !important;">
-                        @if (in_array($studentTopic->st_status, [1,2]))
-                        <h3 class="mb-0" style="text-transform: uppercase;">KẾT QUẢ ĐÁNH GIÁ </h3>
-                        <div class="table-responsive">
-                            <table class="table align-items-center table-flush">
-                                <tbody>
-                                <tr>
-                                    <td>Trạng thái :</td>
-                                    <td>
-                                        <span class="btn btn-sm @if ($studentTopic->st_status)btn-success @else btn-danger @endif">
-                                            {{ isset($status[$studentTopic->st_status]) ? $status[$studentTopic->st_status] : '' }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Điểm bảo vệ : </td>
-                                    <td>
-                                        <b>{{ $studentTopic->st_point }}</b>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Điểm trung bình : </td>
-                                    <td>
-                                        <b>{{ round(($studentTopic->st_point + $studentTopic->st_point_thesis_book + $studentTopic->st_point_outline)/3, 2) }}</b>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <div class="col-md-12 topic-description" style="word-break: break-all;">
-                                {!! $studentTopic->st_comments !!}
-                            </div>
-                        </div>
-                        @endif
                         <h3 class="mb-0" style="text-transform: uppercase;">THÔNG TIN ĐỀ TÀI ĐÃ ĐĂNG KÝ</h3>
 
                         <div class="table-responsive">
@@ -128,59 +96,28 @@
                                             @endif
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td style="width: 30%">Trạng thái : </td>
-                                        <td>{{ isset($status_outline[$studentTopic->st_status_outline]) ? $status_outline[$studentTopic->st_status_outline] : 'Chưa nộp' }}</td>
-                                    </tr>
-                                    @if ($studentTopic->st_point_outline)
+
                                     <tr>
                                         <td style="width: 30%">Điểm : </td>
-                                        <td>{{ $studentTopic->st_point_outline }}</td>
+                                        <td>
+                                            @php
+                                                $number_file = 0;
+                                                $total_point = 0;
+                                            @endphp
+                                            @foreach($studentTopic->result_outline_files as $outline_file)
+                                                @if ($outline_file->rf_status == 2)
+                                                    @php $number_file = $number_file + 1; @endphp
+                                                    @php $total_point = $total_point + $outline_file->rf_point; @endphp
+                                                @endif
+                                            @endforeach
+                                            {{ $total_point > 0 ? round($total_point / $number_file, 2) : 0 }}
+                                        </td>
                                     </tr>
-                                    @endif
                                 </tbody>
                             </table>
                             @if (!empty($studentTopic->st_comment_outline))
                                 <div class="col-md-12 topic-description" style="word-break: break-all;">
                                    {!! $studentTopic->st_comment_outline !!}
-                                </div>
-                            @endif
-                        </div>
-                        @endif
-                        @if ($studentTopic->st_status_thesis_book)
-                        <h3 class="mb-0" style="text-transform: uppercase;">THÔNG TIN QUYỂN ĐỒ ÁN</h3>
-
-                        <div>
-                            <!-- Projects table -->
-                            <table class="table align-items-center table-flush">
-                                <tbody>
-                                    {{--<tr>--}}
-                                        {{--<td style="width: 30%">Tên báo cáo : </td>--}}
-                                        {{--<td>{{ isset($studentTopic->st_thesis_book) ? $studentTopic->st_thesis_book : '' }}</td>--}}
-                                    {{--</tr>--}}
-                                    <tr>
-                                        <td style="width: 30%">Danh sách file : </td>
-                                        <td>
-                                            @if ($studentTopic->result_book_files->count() > 0)
-                                            <a href="{{ route('user.thesis.book') }}" target="_blank">Danh sách file</a>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @if ($studentTopic->st_point_thesis_book)
-                                    <tr>
-                                        <td style="width: 30%">Điểm : </td>
-                                        <td>{{ $studentTopic->st_point_thesis_book }}</td>
-                                    </tr>
-                                    @endif
-                                    <tr>
-                                        <td style="width: 30%">Trạng thái : </td>
-                                        <td>{{ isset($status_outline[$studentTopic->st_status_thesis_book]) ? $status_outline[$studentTopic->st_status_thesis_book] : 'Chưa nộp' }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            @if (!empty($studentTopic->st_comment_thesis_book))
-                                <div class="col-md-12 topic-description" style="word-break: break-all;">
-                                    {!! $studentTopic->st_comment_thesis_book !!}
                                 </div>
                             @endif
                         </div>

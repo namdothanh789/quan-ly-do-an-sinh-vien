@@ -115,12 +115,7 @@
                                     <th>Bộ môn</th>
                                     <th>Giáo viên hướng dẫn</th>
                                     <th>Đề cương</th>
-                                    <th>Điểm ĐC</th>
-                                    <th>Quyển đồ án</th>
-                                    <th>Điểm KL</th>
-                                    <th>Điểm BV</th>
-                                    <th>Điểm TB</th>
-                                    <th>Trạng thái</th>
+                                    <th>Điểm TB đề cương</th>
                                     @if ($user->can(['toan-quyen-quan-ly', 'nhan-set-va-cham-diem-de-tai', 'xoa-de-tai-sinh-vien-dang-ky']))
                                     <th class=" text-center">Hành động</th>
                                     @endif
@@ -146,17 +141,20 @@
                                         <a href="{{ route('student.topics.view.files', ['id' => $student->id, 'type' => 1]) }}" target="_blank" >Danh sách file {{ $student->result_outline_files()->count() }}</a>
                                         @endif
                                     </td>
-                                    <td style="vertical-align: middle">{{ $student->st_point_outline }}</td>
                                     <td style="vertical-align: middle">
-                                        <p>{{ isset($status_outline[$student->st_status_thesis_book]) ? $status_outline[$student->st_status_thesis_book] : 'Chưa nộp' }}</p>
-                                        @if ($student->result_book_files()->count() > 0)
-                                        <a href="{{ route('student.topics.view.files', ['id' => $student->id, 'type' => 2]) }}">Danh sách file {{ $student->result_book_files()->count() }}</a>
-                                        @endif
+                                        @php
+                                            $number_file = 0;
+                                            $total_point = 0;
+                                        @endphp
+                                        @foreach($student->result_outline_files as $outline_file)
+                                            @if ($outline_file->rf_status == 2)
+                                                @php $number_file = $number_file + 1; @endphp
+                                                @php $total_point = $total_point + $outline_file->rf_point; @endphp
+                                            @endif
+                                        @endforeach
+                                        {{ $total_point > 0 ? round($total_point / $number_file, 2) : 0 }}
                                     </td>
-                                    <td style="vertical-align: middle">{{ $student->st_point_thesis_book }}</td>
-                                    <td style="vertical-align: middle">{{ $student->st_point }}</td>
-                                    <td style="vertical-align: middle">{{ round(($student->st_point + $student->st_point_outline + $student->st_point_thesis_book)/3, 2) }}</td>
-                                    <td style="vertical-align: middle">{{ isset($status[$student->st_status]) ? $status[$student->st_status] : '' }}</td>
+
                                     @if ($user->can(['toan-quyen-quan-ly', 'nhan-set-va-cham-diem-de-tai', 'xoa-de-tai-sinh-vien-dang-ky']))
                                     <td style="vertical-align: middle">
                                         @if ($user->can(['toan-quyen-quan-ly', 'nhan-set-va-cham-diem-de-tai']))

@@ -282,12 +282,18 @@ class ScheduleStudentController extends Controller
         if (!$user) {
             return abort(404);
         }
-        $user->nu_status = $request->type;
+        $userCheck = User::find($user_id);
 
         try {
-            $user->save();
+            NotificationUser::where(['nu_notification_id' => $noti_id, 'nu_user_id' => $user_id])->update(['nu_status' => $request->type]);
             $title = $request->type == 1 ? 'Tham gia' : 'Không tham gia';
-            return view('page.notifications.confirm', compact('title'));
+
+            if (isset($userCheck) && $userCheck->hasRole('sv')) {
+                return view('page.notifications.confirm', compact('title'));
+            } else {
+                return view('admin.notification.confirm', compact('title', 'userCheck'));
+            }
+
         } catch (\Exception $exception) {
             return abort(404);
         }

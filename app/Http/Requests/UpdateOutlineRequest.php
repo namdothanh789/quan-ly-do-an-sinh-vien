@@ -26,6 +26,7 @@ class UpdateOutlineRequest extends FormRequest
         return [
             //
             'result_outline_file_id' => 'required',
+            'rf_point' => 'nullable|min:0',
         ];
     }
 

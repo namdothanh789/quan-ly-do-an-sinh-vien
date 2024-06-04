@@ -46,7 +46,7 @@ class LoginController extends Controller
     public function login()
     {
         if (Auth::guard('students')->check()) {
-            return redirect()->back();
+            return redirect()->route('user.home');
         }
         return view('page.auth.login');
     }
