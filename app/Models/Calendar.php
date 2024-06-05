@@ -24,7 +24,7 @@ class Calendar extends Model
     ];
 
     const STATUS = [
-        0 => 'Đã nộp',
+        0 => 'To do',
         1 => 'Hoàn thành',
         2 => 'Bị chậm',
         3 => 'Yc Làm lại',

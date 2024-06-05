@@ -15,7 +15,11 @@ class StudentTopicComposer
         $topics = TopicCourse::where(['tc_course_id' => $user->course_id, 'tc_department_id' => $user->department_id, 'tc_status' => 1])->get();
         $listIdTopic = $topics->pluck('id')->toArray();
 
-        $sudentTopics = StudentTopic::whereIn('st_topic_id', $listIdTopic)->count();
+        // $sudentTopics = StudentTopic::whereIn('st_topic_id', $listIdTopic)->count();
+        // assign size of $listIdTopic array to $studentTopics
+
+
+        $sudentTopics = count($listIdTopic);
 
         $param = [
             'st_student_id' => $user->id,
