@@ -33,7 +33,7 @@ class UpdateOutlineRequest extends FormRequest
     public function messages()
     {
         return [
-            'result_outline_file_id.required' => 'Vui lòng chọn file đề cương cần nhận sét',
+            'result_outline_file_id.required' => 'Vui lòng chọn file đề cương cần nhận xét',
         ];
     }
 }

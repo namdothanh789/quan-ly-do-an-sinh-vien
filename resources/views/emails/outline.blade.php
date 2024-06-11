@@ -7,7 +7,7 @@
         @endif
         @if (!isset($data['topic']))
             @if ($data['teacher_status'] == 1)
-            <p>Giáo viên : {{ $data['name_teacher'] }} đã @if(!empty($data['status'])) <b>{{ $data['status'] }}</b> @else nhận sét @endif @if ($data['outline_status'] == 1) đề cương @else khóa luận @endif : {{ $data['title'] }}.</p>
+            <p>Giáo viên : {{ $data['name_teacher'] }} đã @if(!empty($data['status'])) <b>{{ $data['status'] }}</b> @else nhận xét @endif @if ($data['outline_status'] == 1) đề cương @else khóa luận @endif : {{ $data['title'] }}.</p>
             @else
             <p>Sinh viên : {{ $data['name_student'] }} đã nộp @if ($data['outline_status'] == 1) đề cương @else đồ án @endif : {{ $data['title'] }}.</p>
             @endif
@@ -22,7 +22,7 @@
         @endif
         @if ($data['teacher_status'] == 1)
         <div>
-            <p><b>Nhận sét</b></p>
+            <p><b>Nhận xét</b></p>
             <p>
                 {!! $data['comments'] !!}
             </p>

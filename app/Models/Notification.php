@@ -14,7 +14,7 @@ class Notification extends Model
         3 => 'Thông báo thời gian nộp đề cương',
         4 => 'Thông báo thời gian nộp đề tài',
         5 => 'Thông báo lịch bảo vệ / nộp đồ án',
-//        6 => 'Lịch hẹn'
+        6 => 'Lịch hẹn'
     ];
     const SEND_TO = [
         1 => 'Gửi cho giáo viên',

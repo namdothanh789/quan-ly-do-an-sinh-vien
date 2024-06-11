@@ -32,7 +32,7 @@ class UpdateThesisBookRequest extends FormRequest
     public function messages()
     {
         return [
-            'result_book_file_id.required' => 'Vui lòng chọn file cần nhận sét',
+            'result_book_file_id.required' => 'Vui lòng chọn file cần nhận xét',
         ];
     }
 }

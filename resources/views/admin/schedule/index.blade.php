@@ -1,5 +1,5 @@
 @extends('admin.layouts.main')
-@section('title', '')
+@section('title', 'Danh sách lịch hẹn')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
@@ -45,7 +45,7 @@
                                         <th>Kết thúc</th>
                                         <th>Loại </th>
                                         {{--<th>Trạng thái</th>--}}
-                                        <th>Nôi dung</th>
+                                        <th>Nội dung</th>
                                         <th>Ngày tạo</th>
                                         @if ($user->can(['toan-quyen-quan-ly', 'chinh-sua-lich-hen', 'xoa-lich-hen']))
                                         <th class=" text-center" width="12%">Hành động</th>

@@ -375,7 +375,7 @@ INSERT INTO `permissions` (`id`, `name`, `display_name`, `description`, `group_p
 (1, 'toan-quyen-quan-ly', 'Toàn quyền quản lý', NULL, 1, '2024-03-02 09:22:44', '2024-03-02 09:22:44'),
 (2, 'truy-cap-he-thong', 'Truy cập hệ thống', NULL, 1, '2024-03-02 09:22:44', '2024-03-02 09:22:44'),
 (3, 'quan-ly-danh-sach-dang-ky-de-tai', 'Quản lý danh sách đăng ký đề tài', NULL, 2, '2024-03-02 09:22:44', '2024-03-02 09:22:44'),
-(4, 'nhan-set-va-cham-diem-de-tai', 'Nhận sét và chấm điểm đề tài', NULL, 2, '2024-03-02 09:22:44', '2024-03-02 09:22:44'),
+(4, 'nhan-set-va-cham-diem-de-tai', 'Nhận xét và chấm điểm đề tài', NULL, 2, '2024-03-02 09:22:44', '2024-03-02 09:22:44'),
 (5, 'xoa-de-tai-sinh-vien-dang-ky', 'Xóa để tài sinh viên đăng ký', NULL, 2, '2024-03-02 09:22:44', '2024-03-02 09:22:44'),
 (6, 'quan-ly-danh-sach-sinh-vien', 'Quản lý danh sách sinh viên', NULL, 3, '2024-03-02 09:22:44', '2024-03-02 09:22:44'),
 (7, 'tao-moi-sinh-vien', 'Tạo mới sinh viên', NULL, 3, '2024-03-02 09:22:44', '2024-03-02 09:22:44'),

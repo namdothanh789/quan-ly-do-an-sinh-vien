@@ -30,7 +30,7 @@
                                     <th scope="col">Tiêu đề </th>
                                     <th scope="col">File</th>
                                     <th scope="col">File phản hồi</th>
-                                    <th scope="col" style="width: 25%">Nhận sét</th>
+                                    <th scope="col" style="width: 25%">Nhận xét</th>
                                     <th scope="col">Điểm</th>
                                     <th scope="col">Trạng thái</th>
                                     <th scope="col">Ngày nộp</th>
