@@ -6,7 +6,8 @@
 <!-- toastr -->
 <script src="{!! asset('admin/plugins/toastr/toastr.min.js') !!}"></script>
 <script src="{{ asset('page/vendor/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
-
+<!-- select2 -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     toastr.options.closeButton = true;
             @if(session('success'))
@@ -31,3 +32,4 @@
 
 <script src="{!! asset('page/js/main.js') !!}"></script>
 @yield('script')
+@stack('scripts')

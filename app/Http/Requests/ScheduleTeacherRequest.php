@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Carbon\Carbon;
 
 class ScheduleTeacherRequest extends FormRequest
 {
@@ -27,8 +28,32 @@ class ScheduleTeacherRequest extends FormRequest
             'n_title' => ['required'],
             'n_content' =>['required'],
             'teacher_id' =>['required'],
-            'n_from_date' =>'required',
-            'n_end_date' =>['required'],
+            'n_schedule_type' => 'required|string',
+            'users' => 'required_if:n_schedule_type,red|array',
+            'users.*' => 'exists:users,id', // Ensure each selected user exists in the users table
+            'n_from_date' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (Carbon::parse($value)->isBefore(Carbon::now())) {
+                        $fail('Thời gian bắt đầu phải sau thời gian hiện tại.');
+                    }
+                },
+            ],
+            'n_end_date' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $fromDate = $this->input('n_from_date');
+                    if (Carbon::parse($value)->isBefore(Carbon::now())) {
+                        $fail('Thời gian kết thúc phải sau thời gian hiện tại.');
+                    }
+                    if (Carbon::parse($value)->isBefore(Carbon::parse($fromDate))) {
+                        $fail('Thời gian kết thúc phải sau thời gian bắt đầu.');
+                    }
+                },
+            ],
+            'meeting_type' => 'required|in:offline,online',
+            'location' => 'required_if:meeting_type,offline',
+            'location_details' => 'required_if:meeting_type,offline',
         ];
 
         return $rule;
@@ -39,9 +64,14 @@ class ScheduleTeacherRequest extends FormRequest
         return [
             'n_title.required' => 'Dữ liệu không thể để trống',
             'teacher_id.required' => 'Dữ liệu không thể để trống',
+            'n_schedule_type.required' => 'Dữ liệu không thể để trống',
+            'users.required_if' => 'Cần chọn sinh viên cho báo cáo nhóm',
             'n_content.required' => 'Dữ liệu không thể để trống',
-            'n_from_date.required' => 'Dữ liệu không thể để trống',
-            'n_end_date.required' => 'Dữ liệu không thể để trống',
+            'n_from_date.required' => 'Cần chọn thời gian bắt đầu',
+            'n_end_date.required' => 'Cần chọn thời gian kết thúc',
+            'meeting_type.required' => 'Cần chọn loại lịch offline/online',
+            'location.required_if' => 'Địa điểm không thể để trống',
+            'location_details.required_if' => 'Địa điểm chi tiết không thể để trống',
         ];
     }
 }

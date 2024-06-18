@@ -10,8 +10,10 @@
                     <p>{{ $data['user']['type'] == 1 ? 'Giáo viên : ' : 'Sinh viên :' }} {{ $data['user']['name'] }}</p>
 
                 @endif
-                <p>Bắt đầu : {{ date('Y-m-d', strtotime($data['date_book'])) }} giờ : {{ date('H:i', strtotime($data['date_book'])) }} phút</p>
-                <p>Kết thúc : {{ date('Y-m-d', strtotime($data['end_date_book'])) }} giờ : {{ date('H:i', strtotime($data['end_date_book'])) }} phút</p>
+                <p>Bắt đầu : {{ date('Y-m-d', strtotime($data['date_book'])) }} : {{ date('H:i', strtotime($data['date_book'])) }}</p>
+                <p>Kết thúc : {{ date('Y-m-d', strtotime($data['end_date_book'])) }} : {{ date('H:i', strtotime($data['end_date_book'])) }}</p>
+                <p>Địa điểm: {{ $data['location'] }}</p>
+                <p>Địa điểm chi tiết: {{ $data['location_details'] }}</p>
                 <p>Xác nhận tham gia :
                     <a href="{{ route('schedule.student.confirm', ['noti_id' => $data['nu_notification_id'], 'user_id' => $data['nu_user_id'], 'type' => 2]) }}">Không tham gia</a>
                     |

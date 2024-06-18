@@ -14,7 +14,8 @@ class Notification extends Model
         3 => 'Thông báo thời gian nộp đề cương',
         4 => 'Thông báo thời gian nộp đề tài',
         5 => 'Thông báo lịch bảo vệ / nộp đồ án',
-        6 => 'Lịch hẹn'
+        6 => 'Lịch hẹn (teacher to student)',
+        7 => 'Lịch hẹn (student to teacher)'
     ];
     const SEND_TO = [
         1 => 'Gửi cho giáo viên',
@@ -48,5 +49,11 @@ class Notification extends Model
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'n_user_id');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'notification_users', 'nu_notification_id', 'nu_user_id')
+                    ->withPivot('nu_status');
     }
 }

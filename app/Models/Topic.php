@@ -18,4 +18,18 @@ class Topic extends Model
     {
         return $this->belongsTo(Department::class, 't_department_id', 'id');
     }
+
+    // Relationship for students
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'student_topics', 'st_topic_id', 'st_student_id')
+                    ->withPivot('st_teacher_id');
+    }
+
+    // Relationship for teachers
+    public function teachers()
+    {
+        return $this->belongsToMany(User::class, 'student_topics', 'st_topic_id', 'st_teacher_id')
+                    ->withPivot('st_student_id');
+    }
 }

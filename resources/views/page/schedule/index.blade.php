@@ -32,12 +32,11 @@
                                 <tr>
                                     <th scope="col">STT</th>
                                     <th scope="col">Tiêu đề </th>
-                                    <th scope="col">Giáo viên</th>
+                                    <th scope="col">Người tham gia</th>
                                     <th>Loại </th>
                                     <th scope="col">Thời gian bắt đầu</th>
                                     <th scope="col">Thời gian kết thúc</th>
-                                    <th scope="col">Nội dung </th>
-                                    <th scope="col">Ngày tạo</th>
+                                    <th scope="col">Trạng thái tham gia </th>
                                     <th class="text-center">Hành động</th>
                                 </tr>
                             </thead>
@@ -51,7 +50,7 @@
                                         <td>
                                             @if(isset($notification->notificationUsers))
                                                 @foreach($notification->notificationUsers as $user)
-                                                    {{ $user->user->name }}
+                                                    {{ $user->user->name }}<br>
                                                 @endforeach
                                             @endif
                                         </td>
@@ -62,8 +61,13 @@
                                         <td>
                                             {{ $notification->n_end_date }}
                                         </td>
-                                        <td><a href="">Nội dung</a></td>
-                                        <td>{{ $notification->created_at }}</td>
+                                        <td>
+                                            @if(isset($notification->notificationUsers))
+                                                @foreach($notification->notificationUsers as $notificationUser)
+                                                    {{ $notificationUser->nu_status == 1 ? 'Tham gia' : 'Không tham gia'}}<br>
+                                                @endforeach
+                                            @endif
+                                        </td>
                                         <td class="text-center">
                                             <a class="btn btn-primary btn-sm" href="{{ route('schedule.teacher.update', $notification->id) }}">
                                                 <i class="fas fa-pencil-alt"></i>
