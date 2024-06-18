@@ -3,7 +3,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- Search form -->
             <a href="/">
-                <img class="logo_banner" style="height: 100px !important;" src="{{ asset('page/img/brand/logo.png') }}">
+                <img class="logo_banner" style="height: 100px !important;" src="{{ asset('page/img/brand/ProManager128x128.png') }}">
             </a>
             <!-- Navbar links -->
             <ul class="navbar-nav align-items-center  ml-md-auto ">
