@@ -63,7 +63,7 @@ class NotificationController extends Controller
     public function create()
     {
         $student = Auth::guard('students')->user();
-        $studentTopic = $student->topicsAsStudent->first(); //first and get are the same
+        $studentTopic = $student->topicsAsStudent->first(); //first will return 1 model, get will return collection of models
         $teacher = $studentTopic->teachers->first();
         $sameTopicStudentList = $studentTopic->students;
         return view('page.schedule.create', compact('teacher', 'sameTopicStudentList'));
@@ -110,15 +110,13 @@ class NotificationController extends Controller
                     ];
                     $dataMail['location'] = $data['meeting_type'] === 'offline' ? $data['location'] : '(Online meeting)';
                     $dataMail['location_details'] = $data['meeting_type'] === 'offline' ? $data['location_details'] : '(Online meeting)';
-                    if ($request->n_from_date) {
-                        $dataMail['date_book'] = $request->n_from_date;
-                        $dataMail['end_date_book'] = $request->n_end_date;
-                    }
+                    $dataMail['date_book'] = $request->n_from_date;
+                    $dataMail['end_date_book'] = $request->n_end_date;
                     MailHelper::sendMailNotification($dataMail);
                 }
             }
             \DB::commit();
-            return redirect()->back()->with('success', 'Thêm mới thành công');
+            return redirect()->route('user.schedule.teacher')->with('success', 'Thêm mới thành công');
         } catch (\Exception $exception) {
             \DB::rollBack();
             return redirect()->back()->with('error', $exception->getMessage());

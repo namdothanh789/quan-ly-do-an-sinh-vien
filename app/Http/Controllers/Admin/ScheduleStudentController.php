@@ -62,6 +62,13 @@ class ScheduleStudentController extends Controller
         return view('admin.schedule.create', compact('topics'));
     }
 
+    public function getStudentList(Request $request)
+    {
+        $topic = Topic::where('id', $request->id)->first();
+        $studentList = $topic->students;
+        return $studentList;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -73,31 +80,20 @@ class ScheduleStudentController extends Controller
         //
         \DB::beginTransaction();
         try {
-            $data = $request->except('_token', 'submit', 'users');
-            $listUsers = $request->users;
+            $data = $request->except('_token', 'topic_id', 'submit', 'users');
 
-            $admin = Auth::user();
+            $adminOrTeacher = Auth::user();
             $data['created_at'] = Carbon::now();
             $data['updated_at'] = Carbon::now();
-            $data['n_user_id'] = $admin->id;
+            $data['n_user_id'] = $adminOrTeacher->id;
+            $data['n_send_to'] = 2;
             $data['n_type'] = 6;
+            $data['location'] = $data['meeting_type'] === 'offline' ? $data['location'] : 'Unknown Location';
+            $data['location_details'] = $data['meeting_type'] === 'offline' ? $data['location_details'] : 'No details';
 
             $id = Notification::insertGetId($data);
             if ($id) {
-                $users = User::select('*');
-
-                if (!empty($data['n_send_to'])) {
-                    $users->where(['type' => $data['n_send_to']]);
-                }
-
-                if ($request->n_send_to == User::STUDENT && !empty($data['n_course_id'])) {
-                    $users->where('course_id', $data['n_course_id']);
-                }
-
-                if ($request->users) {
-                    $users->orWhereIn('id', $request->users);
-                }
-                $users = $users->get();
+                $users = User::whereIn('id', $request->users)->get();
 
                 foreach ($users as $user) {
                     $notificationUser = [
@@ -107,33 +103,29 @@ class ScheduleStudentController extends Controller
                         'nu_status' => 1,
                     ];
 
-                    if (!empty($listUsers) && in_array($user->id, $listUsers)) {
-                        $notificationUser['nu_status'] = 2;
-                    }
-
                     NotificationUser::create($notificationUser);
                     // send email
                     $dataMail = [
-                        'subject' => 'Thông báo lịch hẹn với giáo viên '.$admin->name,
+                        'subject' => $data['n_title'],
+                        'nu_notification_id' => $id,
+                        'nu_user_id' => $user->id,
                         'name' => $user->name,
                         'email' => $user->email,
                         'content' => $data['n_content'],
-                        'user' => $admin->toArray(),
-                        'nu_notification_id' => $id,
-                        'nu_user_id' => $user->id,
+                        'user' => $adminOrTeacher->toArray(),
                     ];
-                    if ($request->n_from_date) {
-                        $dataMail['date_book'] = $request->n_from_date;
-                        $dataMail['end_date_book'] = $request->n_end_date;
-                    }
+                    $dataMail['location'] = $data['meeting_type'] === 'offline' ? $data['location'] : '(Online meeting)';
+                    $dataMail['location_details'] = $data['meeting_type'] === 'offline' ? $data['location_details'] : '(Online meeting)';
+                    $dataMail['date_book'] = $request->n_from_date;
+                    $dataMail['end_date_book'] = $request->n_end_date;
                     MailHelper::sendMailNotification($dataMail);
                 }
             }
             \DB::commit();
-            return redirect()->back()->with('success', 'Thêm mới thành công');
+            return redirect()->route('schedule.student.index')->with('success', 'Thêm mới thành công');
         } catch (\Exception $exception) {
             \DB::rollBack();
-            return redirect()->back()->with('error', 'Đã xảy ra lỗi khi lưu dữ liệu');
+            return redirect()->back()->with('error', $exception->getMessage());
         }
     }
 
@@ -145,15 +137,21 @@ class ScheduleStudentController extends Controller
      */
     public function edit($id)
     {
-        //
-        $notification = Notification::find($id);
-        $notificationUsers = NotificationUser::where(['nu_notification_id' => $id, 'nu_status' => 2])->pluck('nu_user_id')->toArray();
+        //query topics of teacher
+        $user = Auth::user();
+        $topics = $user->topicsAsTeacher->unique('id');
+        //query notified student list
+        $notification = Notification::with(['notificationUsers' => function($query) {
+            $query->with('user');
+        }])->find($id);
+        //query notified student list
+        $notifiedStudentList = $notification->users;
 
         if(!$notification) {
             return redirect()->route('get.list.user')->with('danger', 'Quyền không tồn tại');
         }
 
-        $viewData = ['notification' => $notification, 'notificationUsers' => $notificationUsers];
+        $viewData = ['notification' => $notification, 'notifiedStudentList' => $notifiedStudentList, 'topics' => $topics];
         return view('admin.schedule.edit', $viewData);
     }
 
@@ -169,33 +167,23 @@ class ScheduleStudentController extends Controller
         //
         \DB::beginTransaction();
         try {
-            $data = $request->except('_token', 'submit', 'users');
-            $listUsers = $request->users ? $request->users : [];
+            $data = $request->except('_token', 'topic_id', 'submit', 'users');
 
-            $admin = Auth::user();
+            $adminOrTeacher = Auth::user();
 
-            $data['n_user_id'] = $admin->id;
+            $data['n_user_id'] = $adminOrTeacher->id;
             $data['updated_at'] = Carbon::now();
+            $data['n_send_to'] = 2;
             $data['n_type'] = 6;
-            $notification = Notification::find($id);
+            $data['location'] = $data['meeting_type'] === 'offline' ? $data['location'] : 'Unknown Location';
+            $data['location_details'] = $data['meeting_type'] === 'offline' ? $data['location_details'] : 'No details';
 
+            $notification = Notification::find($id);
+            
             if ($notification) {
                 $notification->update($data);
                 if ($id) {
-                    $users = User::select('*');
-
-                    if (!empty($data['n_send_to'])) {
-                        $users->where(['type' => $data['n_send_to']]);
-                    }
-
-                    if ($request->n_send_to == User::STUDENT && !empty($data['n_course_id'])) {
-                        $users->where('course_id', $data['n_course_id']);
-                    }
-
-                    if ($request->users) {
-                        $users->orWhereIn('id', $request->users);
-                    }
-                    $users = $users->get();
+                    $users = User::whereIn('id', $request->users)->get();
 
                     foreach ($users as $user) {
                         $notificationUser = [
@@ -205,37 +193,34 @@ class ScheduleStudentController extends Controller
                             'nu_status' => 1,
                         ];
 
-                        if (in_array($user->id, $listUsers)) {
-                            $notificationUser['nu_status'] = 2;
-                        }
 
-                        if (NotificationUser::where('nu_notification_id', $id)->delete()) {
+                        if (NotificationUser::where('nu_notification_id', $id)->where('nu_user_id', $user->id)->delete()) {
                             NotificationUser::create($notificationUser);
                         }
 
                         // send email
                         $dataMail = [
-                            'subject' => 'Thông báo lịch hẹn với giáo viên '.$admin->name,
+                            'subject' => $data['n_title'],
+                            'nu_notification_id' => $id,
+                            'nu_user_id' => $user->id,
                             'name' => $user->name,
                             'email' => $user->email,
                             'content' => $data['n_content'],
-                            'user' => $admin->toArray(),
-                            'nu_notification_id' => $id,
-                            'nu_user_id' => $user->id,
+                            'user' => $adminOrTeacher->toArray(),
                         ];
-                        if ($request->n_from_date) {
-                            $dataMail['date_book'] = $request->n_from_date;
-                            $dataMail['end_date_book'] = $request->n_end_date;
-                        }
+                        $dataMail['location'] = $data['meeting_type'] === 'offline' ? $data['location'] : '(Online meeting)';
+                        $dataMail['location_details'] = $data['meeting_type'] === 'offline' ? $data['location_details'] : '(Online meeting)';
+                        $dataMail['date_book'] = $request->n_from_date;
+                        $dataMail['end_date_book'] = $request->n_end_date;
                         MailHelper::sendMailNotification($dataMail);
                     }
                 }
             }
             \DB::commit();
-            return redirect()->back()->with('success', 'Cập nhật thành công thông báo');
+            return redirect()->route('schedule.student.index')->with('success', 'Cập nhật thành công thông báo');
         } catch (\Exception $exception) {
             \DB::rollBack();
-            return redirect()->back()->with('error', 'Đã xảy ra lỗi khi lưu dữ liệu');
+            return redirect()->back()->with('error', $exception->getMessage());
         }
     }
 

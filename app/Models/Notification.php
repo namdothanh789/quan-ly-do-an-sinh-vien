@@ -33,7 +33,7 @@ class Notification extends Model
     protected $table = 'notifications';
 
     protected $fillable = [
-        'n_course_id', 'n_user_id', 'n_title', 'n_type', 'n_content', 'n_from_date', 'n_end_date', 'n_send_to', 'n_status', 'n_schedule_type', 'created_at','updated_at'
+        'n_course_id', 'n_user_id', 'n_title', 'n_type', 'n_content', 'n_from_date', 'n_end_date', 'n_send_to', 'n_status', 'n_schedule_type', 'created_at','updated_at','meeting_type', 'location', 'location_details'
     ];
 
     public function course()

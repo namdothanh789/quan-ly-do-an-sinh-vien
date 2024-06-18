@@ -26,11 +26,13 @@ class ScheduleTeacherRequest extends FormRequest
     {
         $rule = [
             'n_title' => ['required'],
-            'n_content' =>['required'],
             'teacher_id' =>['required'],
             'n_schedule_type' => 'required|string',
             'users' => 'required_if:n_schedule_type,red|array',
             'users.*' => 'exists:users,id', // Ensure each selected user exists in the users table
+            'meeting_type' => 'required|in:offline,online',
+            'location' => 'required_if:meeting_type,offline',
+            'location_details' => 'required_if:meeting_type,offline',
             'n_from_date' => [
                 'required',
                 function ($attribute, $value, $fail) {
@@ -51,9 +53,7 @@ class ScheduleTeacherRequest extends FormRequest
                     }
                 },
             ],
-            'meeting_type' => 'required|in:offline,online',
-            'location' => 'required_if:meeting_type,offline',
-            'location_details' => 'required_if:meeting_type,offline',
+            'n_content' =>['required'],
         ];
 
         return $rule;
@@ -64,14 +64,14 @@ class ScheduleTeacherRequest extends FormRequest
         return [
             'n_title.required' => 'Dữ liệu không thể để trống',
             'teacher_id.required' => 'Dữ liệu không thể để trống',
-            'n_schedule_type.required' => 'Dữ liệu không thể để trống',
+            'n_schedule_type.required' => 'Cần chọn loại cuộc hẹn',
             'users.required_if' => 'Cần chọn sinh viên cho báo cáo nhóm',
-            'n_content.required' => 'Dữ liệu không thể để trống',
-            'n_from_date.required' => 'Cần chọn thời gian bắt đầu',
-            'n_end_date.required' => 'Cần chọn thời gian kết thúc',
             'meeting_type.required' => 'Cần chọn loại lịch offline/online',
             'location.required_if' => 'Địa điểm không thể để trống',
             'location_details.required_if' => 'Địa điểm chi tiết không thể để trống',
+            'n_from_date.required' => 'Cần chọn thời gian bắt đầu',
+            'n_end_date.required' => 'Cần chọn thời gian kết thúc',
+            'n_content.required' => 'Dữ liệu không thể để trống',
         ];
     }
 }

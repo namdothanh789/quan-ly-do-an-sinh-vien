@@ -135,7 +135,6 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             Route::post('/list/by/department', 'TopicController@getByDepartment')->name('list.by.department');
         });
 
-
         Route::group(['prefix' => 'council'], function(){
             Route::get('/','CouncilController@index')->name('council.index')->middleware('permission:quan-ly-danh-sach-hoi-dong|toan-quyen-quan-ly');
             Route::get('/create','CouncilController@create')->name('council.create')->middleware('permission:tao-moi-hoi-dong|toan-quyen-quan-ly');
@@ -219,6 +218,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             Route::get('/delete/{id}','ScheduleStudentController@delete')->name('schedule.student.delete')->middleware('permission:toan-quyen-quan-ly|xoa-lich-hen');
 
             Route::get('/show/{id}','ScheduleStudentController@show')->name('schedule.student.show');
+            Route::get('/studentList', 'ScheduleStudentController@getStudentList')->name('schedule.student.list')->middleware('permission:toan-quyen-quan-ly|them-moi-lich-hen');
         });
     });
     Route::group(['prefix' => 'schedule/student'], function(){
