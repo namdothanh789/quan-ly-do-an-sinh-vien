@@ -12,12 +12,9 @@ class StudentTopicComposer
     public function compose(View $view)
     {
         $user = Auth::guard('students')->user();
+        // danh sách đề tài cùng niên khóa và khoa học với sinh viên
         $topics = TopicCourse::where(['tc_course_id' => $user->course_id, 'tc_department_id' => $user->department_id, 'tc_status' => 1])->get();
         $listIdTopic = $topics->pluck('id')->toArray();
-
-        // $sudentTopics = StudentTopic::whereIn('st_topic_id', $listIdTopic)->count();
-        // assign size of $listIdTopic array to $studentTopics
-
 
         $sudentTopics = count($listIdTopic);
 

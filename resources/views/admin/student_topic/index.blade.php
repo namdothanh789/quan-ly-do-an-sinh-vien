@@ -1,5 +1,5 @@
 @extends('admin.layouts.main')
-@section('title', '')
+@section('title', 'Danh sách đề tài')
 @section('content')
 <section class="content-header">
     <div class="container-fluid">
@@ -7,8 +7,8 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-left">
                     <li class="breadcrumb-item"><a href="{{ route('home') }}"> <i class="nav-icon fas fa fa-home"></i> Trang chủ</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('student.topics.index') }}">Sinh viên đăng ký</a></li>
-                    <li class="breadcrumb-item active">Danh sách</li>
+                    {{-- <li class="breadcrumb-item"><a href="{{ route('student.topics.index') }}">Danh sách đề tài</a></li> --}}
+                    <li class="breadcrumb-item active">Danh sách đề tài</li>
                 </ol>
             </div>
         </div>
@@ -22,7 +22,7 @@
     <div class="container-fluid">
         <div class="card card-default">
             <div class="card-header card-header-border-bottom">
-                <h3 class="card-title">From tìm kiếm</h3>
+                <h3 class="card-title">Form tìm kiếm</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                 </div>
@@ -41,18 +41,6 @@
                                 <input type="text" name="name" class="form-control mg-r-15" placeholder="Họ và tên">
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-3">
-                            <div class="form-group">
-                                <select class="custom-select" name="teacher_id">
-                                    <option value="">Chọn giáo viên</option>
-                                    @foreach($teachers as $teacher)
-                                    <option {{old('tc_teacher_id', isset($topicCourse->tc_teacher_id) ? $topicCourse->tc_teacher_id : '') == $teacher->id ? 'selected="selected"' : ''}} value="{{$teacher->id}}">
-                                        {{$teacher->name}}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
                         <div class="col-sm-12 col-md-2">
                             <div class="form-group">
                                 <select name="tc_course_id" class="form-control">
@@ -63,26 +51,6 @@
                                 </select>
                             </div>
                         </div>
-                        {{--<div class="col-sm-12 col-md-3">--}}
-                        {{--<div class="form-group">--}}
-                        {{--<select name="department_id" class="form-control">--}}
-                        {{--<option value="">Chọn khoa</option>--}}
-                        {{--@foreach($departments as $key => $department)--}}
-                        {{--@if ($department->parents->isNotEmpty())--}}
-                        {{--<optgroup label="{{ $department->dp_name }}">--}}
-                        {{--@foreach($department->parents as $parent)--}}
-                        {{--<option value="{{$parent->id}}">{{$parent->dp_name}}</option>--}}
-                        {{--@endforeach--}}
-                        {{--</optgroup>--}}
-                        {{--@else--}}
-                        {{--<option value="{{$department->id}}">--}}
-                        {{--{{$department->dp_name}}--}}
-                        {{--</option>--}}
-                        {{--@endif--}}
-                        {{--@endforeach--}}
-                        {{--</select>--}}
-                        {{--</div>--}}
-                        {{--</div>--}}
                         <div class="col-sm-12 col-md-2">
                             <div class="input-group-append">
                                 <button type="submit" name="search" value="true" class="btn btn-success " style="margin-right: 10px"><i class="fas fa-search"></i> Search</button>
@@ -98,7 +66,6 @@
                     <div class="card-header">
                         <div class="card-tools">
                             <div class="btn-group">
-                                {{--<a href="{{ route('student.create') }}"><button type="button" class="btn btn-block btn-info"><i class="fa fa-plus"></i> Tạo mới</button></a>--}}
                             </div>
                         </div>
                     </div>
@@ -113,7 +80,6 @@
                                     <th>Mã sinh viên</th>
                                     <th>Niên khóa</th>
                                     <th>Bộ môn</th>
-                                    <th>Giáo viên hướng dẫn</th>
                                     <th>Đề cương</th>
                                     <th>Điểm TB đề cương</th>
                                     @if ($user->can(['toan-quyen-quan-ly', 'nhan-set-va-cham-diem-de-tai', 'xoa-de-tai-sinh-vien-dang-ky']))
@@ -132,9 +98,6 @@
                                     <td style="vertical-align: middle">{{ isset($student->student) ? $student->student->code : '' }}</td>
                                     <td style="vertical-align: middle">{{ isset($student->course) ? $student->course->c_name : '' }}</td>
                                     <td style="vertical-align: middle">{{ isset($student->topic) ?  $student->topic->department->dp_name : '' }}</td>
-                                    <td style="vertical-align: middle">
-                                        {{ isset($student->teacher) ? $student->teacher->name : '' }}
-                                    </td>
                                     <td style="vertical-align: middle">
                                         <p style="margin: 2px">{{ isset($status_outline[$student->st_status_outline]) ? $status_outline[$student->st_status_outline] : 'Chưa nộp' }}</p>
                                         @if ($student->result_outline_files()->count() > 0)

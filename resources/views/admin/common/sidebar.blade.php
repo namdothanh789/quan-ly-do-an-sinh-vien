@@ -38,7 +38,7 @@
                 <li class="nav-item">
                     <a href="{{ route('student.topics.index') }}" class="nav-link {{ isset($student_topics) ? $student_topics : '' }}">
                         <i class="nav-icon fas fa-clipboard-list"></i>
-                        <p>Danh sách đăng ký</p>
+                        <p>Danh sách đề tài</p>
                     </a>
                 </li>
                 @endif

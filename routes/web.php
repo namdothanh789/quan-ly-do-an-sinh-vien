@@ -169,14 +169,14 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
         });
 
         Route::group(['prefix' => 'student-topics'], function(){
-            Route::get('/','StudentTopicController@index')->name('student.topics.index')->middleware('permission:quan-ly-danh-sach-dang-ky-de-tai|toan-quyen-quan-ly');
+            Route::get('/','StudentTopicController@index')->name('student.topics.index')->middleware('permission:quan-ly-danh-sach-dang-ky-de-tai|toan-quyen-quan-ly'); //màn hiện danh sách đề tài cùng sinh viên của giảng viên.
             Route::get('/update/{id}','StudentTopicController@edit')->name('student.topics.update')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');
             Route::post('/update/outline{id}','StudentTopicController@updateOutline')->name('student.update.outline')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');
-            Route::post('/update/thesis/book{id}','StudentTopicController@updateThesisBook')->name('student.update.thesis.book')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');
-            Route::post('/update/student/topics{id}','StudentTopicController@updateStudentTopic')->name('update.student.topic')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');
+            Route::post('/update/thesis/book{id}','StudentTopicController@updateThesisBook')->name('student.update.thesis.book')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');// route này đang ko dùng
+            Route::post('/update/student/topics{id}','StudentTopicController@updateStudentTopic')->name('update.student.topic')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');//route này đang ko dùng
             Route::get('/delete/{id}', 'StudentTopicController@delete')->name('student.topics.delete')->middleware('permission:xoa-de-tai-sinh-vien-dang-ky|toan-quyen-quan-ly');
 
-            Route::get('/view/files/{id}','StudentTopicController@viewFileReport')->name('student.topics.view.files');
+            Route::get('/view/files/{id}','StudentTopicController@viewFileReport')->name('student.topics.view.files');//nếu như có file thì mới hiện link
         });
 
         Route::group(['prefix' => 'admin'], function(){
@@ -239,35 +239,35 @@ Route::group(['namespace' => 'Page'], function() {
     Route::group(['middleware' =>['student']], function() {
 
         Route::get('/home', 'HomeController@index')->name('user.home');
-        Route::get('/topic/detail/{id}', 'TopicController@index')->name('topic.detail');
-        Route::post('register/topic/{id}', 'TopicController@registerTopic')->name('register.topic');
-        Route::get('topic/register/result', 'TopicController@topicRegisters')->name('topic.register.result');
+        Route::get('/topic/detail/{id}', 'TopicController@index')->name('topic.detail'); //màn chi tiết 1 để tài ()
+        Route::post('register/topic/{id}', 'TopicController@registerTopic')->name('register.topic');//button 'Đăng ký' ở màn chi tiết 1 đề tài
+        Route::get('topic/register/result', 'TopicController@topicRegisters')->name('topic.register.result'); //màn danh sách các đề tài cùng niên khóa và khoa học với sinh viên
 
         Route::group(['prefix' => 'user'], function(){
             Route::get('/profile', 'UserController@profile')->name('user.profile');
-            Route::get('topic/register/details', 'UserController@registerDetails')->name('user.topic.details');
+            Route::get('topic/register/details', 'UserController@registerDetails')->name('user.topic.details');//màn "Đề tài đã đăng ký của sinh viên"
             Route::post('update/profile', 'UserController@updateProfile')->name('update.user.profile');
 
-            Route::get('/outline', 'UserController@outline')->name('user.outline');
+            Route::get('/outline', 'UserController@outline')->name('user.outline'); //submit outline file screen
             Route::post('/post/outline/{id}', 'UserController@postOutline')->name('user.post.outline');
-            Route::get('/download/file/{id}', 'UserController@downloadFile')->name('download.file.outline');
+            Route::get('/download/file/{id}', 'UserController@downloadFile')->name('download.file.outline'); //route này đang ko dùng
 
             Route::get('/thesis/book', 'UserController@thesisBook')->name('user.thesis.book');
             Route::post('/post/thesis/book/{id}', 'UserController@postThesisBook')->name('user.post.thesis.book');
 
-            Route::get('cancel/registration/{id}', 'UserController@cancel')->name('user.cancel.registration');
+            Route::get('cancel/registration/{id}', 'UserController@cancel')->name('user.cancel.registration');//nút 'Hủy đăng ký' trong màn "Đề tài đã đăng ký của sinh viên"
 
-            Route::get('change/password', 'UserController@changePassword')->name('user.change.password');
+            Route::get('change/password', 'UserController@changePassword')->name('user.change.password');//màn "Đổi mật khẩu"
             Route::post('post/change/password', 'UserController@postChangePassword')->name('user.post.change.password');
 
-            Route::get('notifications', 'NotificationController@index')->name('user.notifications.index');
-            Route::get('notification/details/{id}', 'NotificationController@details')->name('user.notifications.details');
-            Route::get('about', 'HomeController@about')->name('user.about');
+            Route::get('notifications', 'NotificationController@index')->name('user.notifications.index');//đang không dùng
+            Route::get('notification/details/{id}', 'NotificationController@details')->name('user.notifications.details');//đang không dùng
+            Route::get('about', 'HomeController@about')->name('user.about');//đang không dùng
 
-            Route::get('calendar/{id}', 'UserController@getCalendar')->name('user.get.calendar');
+            Route::get('calendar/{id}', 'UserController@getCalendar')->name('user.get.calendar'); //calendar (task) list screen
             Route::get('calendar/detail/{id}', 'UserController@getCalendarDetail')->name('user.get.calendar.detail');
 
-            Route::get('calendar/file/result/{id}', 'UserController@calendarFileResult')->name('file.result');
+            Route::get('calendar/file/result/{id}', 'UserController@calendarFileResult')->name('file.result'); //submit file result screen
             Route::post('calendar/file/result/{id}', 'UserController@postFileResult')->name('file.result');
 
             Route::group(['prefix' => 'schedule/teacher'], function(){

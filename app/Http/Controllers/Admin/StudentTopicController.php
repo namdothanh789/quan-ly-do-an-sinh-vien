@@ -35,31 +35,27 @@ class StudentTopicController extends Controller
             $topic->with(['topic', 'department']);
         }, 'teacher', 'course', 'result_outline_files', 'result_book_files']);
 
-
+        //search by student code
         if ($request->code) {
             $code = $request->code;
             $studentTopics->whereIn('st_student_id', function ($query) use ($code) {
-                $query->select('id')->from('users')->where('code', $code);
+                $query->select('id')->from('users')->where('code', 'like', '%'. $code . '%');
             });
         }
-
+        //search by student name
         if ($request->name) {
             $name = $request->name;
             $studentTopics->whereIn('st_student_id', function ($query) use ($name) {
                 $query->select('id')->from('users')->where('name', 'like', '%'.$name.'%');
             });
         }
-        if ($request->teacher_id) {
-            $studentTopics->where('st_teacher_id', $request->teacher_id);
-        }
-
+        //search by course
         if ($request->tc_course_id) {
             $studentTopics->where('st_course_id', $request->tc_course_id);
         }
+        //filter by id of login teacher
         $user = Auth::user();
-        if ($user->hasRole(User::ROLE_USERS)) {
-            $studentTopics->where('st_teacher_id', $user->id);
-        }
+        $studentTopics->where('st_teacher_id', $user->id);
 
         $studentTopics = $studentTopics->orderByDesc('id')->paginate(NUMBER_PAGINATION);
 
@@ -148,7 +144,7 @@ class StudentTopicController extends Controller
                         'comments' => $result_file->rf_comment,
                         'status' => isset($status[$student->st_status_outline]) ? $status[$student->st_status_outline] : '',
                         'point'  => $result_file->rf_point,
-                        'outline_status' => 1,
+                        'outline_status' => 1, //1 là đề cương, 0 là đồ án
                         'teacher_status' => 1
                     ];
 
@@ -226,7 +222,7 @@ class StudentTopicController extends Controller
                         'comments' => $result_file->rf_comment,
                         'status' => isset($status[$student->st_status_thesis_book]) ? $status[$student->st_status_thesis_book] : '',
                         'point'  => $result_file->rf_point,
-                        'outline_status' => 0,
+                        'outline_status' => 0, //1 là đề cương, 0 là đồ án
                         'teacher_status' => 1
                     ];
 

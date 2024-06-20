@@ -136,7 +136,7 @@ class UserController extends Controller
 
 //            $studentTopic->st_outline = $request->st_outline;
 //            $studentTopic->st_outline_part = $st_outline_part;
-            $studentTopic->st_status_outline = 1;
+            $studentTopic->st_status_outline = 1; //đã nộp
 
             if (ResultFile::create($data)) {
                 // send mail teacher
@@ -149,7 +149,7 @@ class UserController extends Controller
                     'title' => $request->st_outline,
                     'link_download' => $st_outline_part,
                     'status' => 'Đã nộp',
-                    'outline_status' => 1,
+                    'outline_status' => 1, //1 là đề cương, 0 là đồ án
                     'teacher_status' => 0
                 ];
 
@@ -226,7 +226,7 @@ class UserController extends Controller
                     'title' => $request->st_thesis_book,
                     'link_download' => $thesis_book,
                     'status' => 'Đã nộp',
-                    'outline_status' => 0,
+                    'outline_status' => 0, //1 là đề cương, 0 là đồ án
                     'teacher_status' => 0
                 ];
 
@@ -358,7 +358,7 @@ class UserController extends Controller
         }
         try {
             $calendar->file_result = $file_result;
-            $calendar->status = 4;
+            $calendar->status = 4; //4 => 'Đã nộp',
             $calendar->save();
 
             return redirect()->route('user.get.calendar', $calendar->student_topic_id)->with('success', 'Nộp file báo cáo thành công.');

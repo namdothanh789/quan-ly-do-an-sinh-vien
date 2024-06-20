@@ -7,7 +7,8 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-left">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}"> <i class="nav-icon fas fa fa-home"></i> Trang chủ</a></li>
-                        <li class="breadcrumb-item"><a href="">Thông tin đăng ký đề tài</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('student.topics.index') }}">Danh sách đề tài</a></li>
+                        <li class="breadcrumb-item active">Nhận xét file báo cáo</li>
 
                     </ol>
                 </div>

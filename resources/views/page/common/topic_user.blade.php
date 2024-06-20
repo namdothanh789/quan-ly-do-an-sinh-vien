@@ -32,10 +32,10 @@
             <div class="card-body" style="min-height: 142px">
                 <div class="row">
                     <div class="col" style="padding: 0px">
-                        <h5 class="card-title text-uppercase text-muted mb-0">Nộp file đề cương</h5>
+                        <h5 class="card-title text-uppercase text-muted mb-0">Nộp file báo cáo</h5>
                         @if(isset($studentTopic) && $studentTopic->result_outline_files)
                             <span class="mb-0" style="font-size: 14px !important;">
-                                Điểm DC :
+                                Điểm TB :
                                 @php
                                     $number_file = 0;
                                     $total_point = 0;
@@ -68,8 +68,10 @@
                     </p>
 
                     <p class="mt-3 mb-0 text-sm col text-right">
+                        {{-- @if (isset($studentTopic->topic) && checkInTime($studentTopic->topic->tc_start_outline, $studentTopic->topic->tc_end_outline))
+                            <a href="{{ route('user.outline') }}" class="btn btn-sm btn-success">Nộp file báo cáo</a> --}}
                         @if (isset($studentTopic->topic) && checkInTime($studentTopic->topic->tc_start_outline, $studentTopic->topic->tc_end_outline))
-                            <a href="{{ route('user.outline') }}" class="btn btn-sm btn-success">Nộp đề cương</a>
+                        <a href="{{ route('user.get.calendar', ['id' => $studentTopic->id]) }}" class="btn btn-sm btn-success">Danh sách công việc</a>
                         @elseif(isset($studentTopic->topic) && checkTime($studentTopic->topic->tc_start_outline) > 0)
                             <a href="" class="btn btn-sm btn-success">Nộp : {{ formatTime($studentTopic->topic->tc_start_outline) }} - {{ formatTime($studentTopic->topic->tc_end_outline) }}</a>
                         @endif
