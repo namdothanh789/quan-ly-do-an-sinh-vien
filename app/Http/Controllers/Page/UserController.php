@@ -3,6 +3,8 @@
 
 namespace App\Http\Controllers\Page;
 
+use App\Http\Requests\ResultFileRequest;
+use App\Traits\ResultFileUploadTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\StudentTopic;
@@ -11,7 +13,7 @@ use App\Models\User;
 use App\Http\Requests\UserUpdateInforProfileRequest;
 use App\Http\Requests\OutlineRequest;
 use App\Http\Requests\ThesisBookRequest;
-use App\Http\Requests\CalendarFileResultRequest;
+// use App\Http\Requests\CalendarFileResultRequest;
 use App\Helpers\MailHelper;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Models\Calendar;
@@ -20,12 +22,13 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    use ResultFileUploadTrait;
     public function __construct()
     {
         view()->share([
             'gender' => User::GENDER,
-            'status_outline' => StudentTopic::STATUS_OUTLINE,
-            'status' => StudentTopic::STATUS
+            // 'status_outline' => StudentTopic::STATUS_OUTLINE,
+            // 'status' => StudentTopic::STATUS
         ]);
     }
     //
@@ -70,7 +73,7 @@ class UserController extends Controller
         ];
         $studentTopic = StudentTopic::with(['topic' => function($topic) {
             $topic->with(['topic', 'department']);
-        }, 'teacher', 'result_outline_files'])->where($param)->first();
+        }, 'teacher'])->where($param)->first();
 
         if (!$studentTopic)
         {
@@ -296,7 +299,7 @@ class UserController extends Controller
 
     public function getCalendar($id)
     {
-        $calendars = Calendar::where('student_topic_id', $id)->get();
+        $calendars = Calendar::with('resultFile')->where('student_topic_id', $id)->get();
 
         $topic = StudentTopic::with(['topic' => function($query) {
             $query->with('topic');
@@ -311,7 +314,7 @@ class UserController extends Controller
             'student_topic_id' => $id,
             'topic' => $topic,
             'status' => Calendar::STATUS,
-            'classStatus' => Calendar::CLASS_STATUS,
+            'classStatus' => Calendar::STUDENT_CLASS_STATUS,
         ];
 
         return view('page.topic.calendar', $viewData);
@@ -339,29 +342,34 @@ class UserController extends Controller
         return view('page.topic.calendar_file', compact('calendar'));
     }
 
-    public function postFileResult(CalendarFileResultRequest $request, $id)
+    public function postFileResult(ResultFileRequest $request, $id)
     {
         $user = Auth::guard('students')->user();
 
-        if($request->hasfile('file_result'))
-        {
-            $file = $request->file('file_result');
-            $file_result = date('YmdHms').'-'. $user->code .'-'.$file->getClientOriginalName();
-
-            $file->move(public_path().'/uploads/calendar/', date('YmdHms'). $user->code .$file->getClientOriginalName());
+        $calendar = Calendar::with('resultFile')->findOrFail($id);
+        // Kiểm tra nếu resultFile chưa được khởi tạo
+        if (!isset($calendar->resultFile)) {
+            $result_file = new ResultFile();
+            $result_file->calendar_id = $calendar->id;
+            /** Handle file upload */
+            $resultPath = $this->uploadResultFile($request, 'rf_path', 'uploads/calendar', $calendar->id);
         }
-
-        $calendar = Calendar::find($id);
-
-        if (!$calendar) {
-            return redirect()->back()->with('error', 'Dữ liệu không tồn tại');
+        else {
+            $result_file = $calendar->resultFile;
+            /** Handle file update */
+            $resultPath = $this->updateResultFile($request, 'rf_path', 'uploads/calendar', $calendar->id, $result_file->rf_path);
         }
+        
         try {
-            $calendar->file_result = $file_result;
-            $calendar->status = 4; //4 => 'Đã nộp',
-            $calendar->save();
+            $result_file->rf_title = $request->rf_title;
+            $result_file->rf_path = $resultPath;
+            $result_file->rf_type = $request->rf_type;
 
-            return redirect()->route('user.get.calendar', $calendar->student_topic_id)->with('success', 'Nộp file báo cáo thành công.');
+            $calendar->status = 1; //1 => 'Đã nộp',
+            $calendar->save();
+            $result_file->save();
+
+            return redirect()->route('user.get.calendar', $calendar->student_topic_id)->with('success', 'Nộp file thành công.');
         } catch (\Exception $exception) {
             return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể nộp file');
         }
@@ -369,12 +377,8 @@ class UserController extends Controller
 
     public function downloadFile($id)
     {
-        $result_file = ResultFile::find($id);
+        $result_file = ResultFile::findOrFail($id);
 
-        if (!$result_file) {
-            return redirect()->back()->with('error', 'Dữ liệu không tồn tại');
-        }
-
-        return response()->download(public_path('\uploads\documents\\'. $result_file->rf_part_file));
+        return response()->download(public_path($result_file->rf_path));
     }
 }

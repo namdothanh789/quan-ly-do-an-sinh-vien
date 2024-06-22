@@ -45,9 +45,9 @@
                                                 {{--<input type="text" class="form-control" id="inputName" placeholder="Tên đề cương" name="st_outline" value="{{ old('st_outline', isset($student) ? $student->st_outline : '') }}">--}}
                                                 <select name="result_outline_file_id" id="" class="form-control">
                                                     <option value="">Chọn đề cương cần nhận xét</option>
-                                                    @foreach($student->result_outline_files as $outline_file)
+                                                    {{-- @foreach($student->result_outline_files as $outline_file)
                                                         <option value="{{ $outline_file->id }}">{{ $outline_file->rf_title }}</option>
-                                                    @endforeach
+                                                    @endforeach --}}
                                                 </select>
                                                 <span class="text-danger "><p class="mg-t-5">{{ $errors->first('result_outline_file_id') }}</p></span>
                                             </div>

@@ -265,10 +265,11 @@ Route::group(['namespace' => 'Page'], function() {
             Route::get('about', 'HomeController@about')->name('user.about');//đang không dùng
 
             Route::get('calendar/{id}', 'UserController@getCalendar')->name('user.get.calendar'); //calendar (task) list screen
-            Route::get('calendar/detail/{id}', 'UserController@getCalendarDetail')->name('user.get.calendar.detail');
+            Route::get('calendar/detail/{id}', 'UserController@getCalendarDetail')->name('user.get.calendar.detail');//calendar (task) detail screen
 
             Route::get('calendar/file/result/{id}', 'UserController@calendarFileResult')->name('file.result'); //submit file result screen
             Route::post('calendar/file/result/{id}', 'UserController@postFileResult')->name('file.result');
+            Route::get('calendar/file/result/download/{id}', 'UserController@downloadFile')->name('file.result.download');
 
             Route::group(['prefix' => 'schedule/teacher'], function(){
 

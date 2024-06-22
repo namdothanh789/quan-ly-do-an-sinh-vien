@@ -91,16 +91,17 @@
                                     <tr>
                                         <td style="width: 30%">Danh sách file : </td>
                                         <td>
-                                            @if ($studentTopic->result_outline_files->count() > 0)
+                                            {{-- @if ($studentTopic->result_outline_files->count() > 0)
                                             <a href="{{ route('user.outline') }}" target="_blank">Danh sách</a>
-                                            @endif
+                                            @endif --}}
+                                            Danh sách file đã nộp
                                         </td>
                                     </tr>
 
                                     <tr>
                                         <td style="width: 30%">Điểm : </td>
                                         <td>
-                                            @php
+                                            {{-- @php
                                                 $number_file = 0;
                                                 $total_point = 0;
                                             @endphp
@@ -110,7 +111,7 @@
                                                     @php $total_point = $total_point + $outline_file->rf_point; @endphp
                                                 @endif
                                             @endforeach
-                                            {{ $total_point > 0 ? round($total_point / $number_file, 2) : 0 }}
+                                            {{ $total_point > 0 ? round($total_point / $number_file, 2) : 0 }} --}}
                                         </td>
                                     </tr>
                                 </tbody>

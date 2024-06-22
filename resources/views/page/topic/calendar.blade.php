@@ -38,6 +38,7 @@
                                     <th scope="col">Nội dung</th>
                                     <th scope="col">Báo cáo</th>
                                     <th scope="col">Trạng thái</th>
+                                    <th scope="col">Loại file cần nộp</th>
                                 </tr>
                                 </thead>
                                     <tbody>
@@ -49,18 +50,25 @@
                                                     <p>{{ $calendar->start_date .' đến '.$calendar->end_date }}</p>
                                                 </td>
                                                 <td style="vertical-align: middle">
-                                                    @if (!empty($calendar->file_result) && !empty($calendar->file_result))
-                                                        <a href="{!! asset('uploads/calendar/' . $calendar->file_result) !!}" target="_blank" download>Dowload</a>
+                                                    @if (!empty($calendar->resultFile) && !empty($calendar->resultFile->rf_path))
+                                                        <a href="{{ route('file.result.download', ['id' => $calendar->resultFile->id]) }}" target="_blank" download>Dowload file</a>
                                                     @endif
                                                 </td>
                                                 <td style="vertical-align: middle">
                                                     <a href="{{ route('user.get.calendar.detail', $calendar->id) }}">Chi tiết công việc</a>
                                                 </td>
                                                 <td style="vertical-align: middle">
-                                                    <a href="{{ route('file.result', $calendar->id) }}" class="work-content" >Gửi file</a>
+                                                    <a href="{{ route('file.result', ['id' => $calendar->id, 'type' => $calendar->type]) }}" class="work-content" >Gửi file</a>
                                                 </td>
                                                 <td style="vertical-align: middle">
-                                                    {{ $status[$calendar->status] }}
+                                                    <span class="{{ $classStatus[$calendar->status] }}">{{ $status[$calendar->status] }}</span>
+                                                </td>
+                                                <td style="vertical-align: middle">
+                                                    @if ($calendar->type == 0)
+                                                        File báo cáo
+                                                    @elseif ($calendar->type == 1)
+                                                        File đồ án
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

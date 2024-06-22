@@ -33,7 +33,7 @@
                 <div class="row">
                     <div class="col" style="padding: 0px">
                         <h5 class="card-title text-uppercase text-muted mb-0">Nộp file báo cáo</h5>
-                        @if(isset($studentTopic) && $studentTopic->result_outline_files)
+                        {{-- @if(isset($studentTopic) && $studentTopic->result_outline_files)
                             <span class="mb-0" style="font-size: 14px !important;">
                                 Điểm TB :
                                 @php
@@ -48,7 +48,7 @@
                                 @endforeach
                                 {{ $total_point > 0 ? round($total_point / $number_file, 2) : 0 }}
                             </span>
-                        @endif
+                        @endif --}}
                     </div>
                     <div class="col-auto">
                         <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">

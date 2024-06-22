@@ -14,39 +14,39 @@ class StudentTopic extends Model
 
     protected $table = 'student_topics';
 
-    const STATUS_OUTLINE = [
-        1 => 'Đã Nộp',
-        2 => 'Đã duyệt',
-        3 => 'Đã trả về',
-    ];
+    // const STATUS_OUTLINE = [
+    //     1 => 'Đã Nộp',
+    //     2 => 'Đã duyệt',
+    //     3 => 'Đã trả về',
+    // ];
 
-    const STATUS = [
-        0 => 'Chưa duyệt',
-        1 => 'Đạt',
-        2 => 'Chưa đạt',
+    // const STATUS = [
+    //     0 => 'Chưa duyệt',
+    //     1 => 'Đạt',
+    //     2 => 'Chưa đạt',
 
-    ];
+    // ];
 
     protected $fillable = [
         'st_student_id',
         'st_topic_id',
         'st_teacher_id',
-        'st_teacher_instructor_id',
+        // 'st_teacher_instructor_id',
         'st_course_id',
-        'st_outline',
-        'st_outline_part',
-        'st_status_outline',
-        'st_comment_outline',
-        'st_point_outline',
-        'st_thesis_book',
-        'st_thesis_book_part',
-        'st_status_thesis_book',
-        'st_comment_thesis_book',
-        'st_point_thesis_book',
+        // 'st_outline',
+        // 'st_outline_part',
+        // 'st_status_outline',
+        // 'st_comment_outline',
+        // 'st_point_outline',
+        // 'st_thesis_book',
+        // 'st_thesis_book_part',
+        // 'st_status_thesis_book',
+        // 'st_comment_thesis_book',
+        // 'st_point_thesis_book',
         'st_point',
-        'st_status',
-        'st_comments',
-        'st_point_medium',
+        // 'st_status',
+        // 'st_comments',
+        // 'st_point_medium',
         'created_at',
         'updated_at'
     ];
@@ -75,13 +75,13 @@ class StudentTopic extends Model
         return $this->hasOne(Course::class, 'id', 'st_course_id');
     }
 
-    public function result_outline_files()
-    {
-        return $this->hasMany(ResultFile::class, 'rf_student_topic_id', 'id')->where('rf_type', 1);
-    }
+    // public function result_outline_files()
+    // {
+    //     return $this->hasMany(ResultFile::class, 'rf_student_topic_id', 'id')->where('rf_type', 1);
+    // }
 
-    public function result_book_files()
-    {
-        return $this->hasMany(ResultFile::class, 'rf_student_topic_id', 'id')->where('rf_type', 2);
-    }
+    // public function result_book_files()
+    // {
+    //     return $this->hasMany(ResultFile::class, 'rf_student_topic_id', 'id')->where('rf_type', 2);
+    // }
 }

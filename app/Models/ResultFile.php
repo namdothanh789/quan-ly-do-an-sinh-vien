@@ -11,16 +11,22 @@ class ResultFile extends Model
 
     protected $table = 'result_files';
     protected $fillable = [
-        'rf_student_topic_id',
+        // 'rf_student_topic_id',
+        'calendar_id',
         'rf_title',
-        'rf_part_file',
-        'rf_part_file_feedback',
+        'rf_path',
+        // 'rf_part_file_feedback',
         'rf_comment',
         'rf_point',
-        'rf_status',
+        // 'rf_status',
         'rf_type',
         'created_at',
         'updated_at'
     ];
+
+    public function calendar()
+    {
+        return $this->belongsTo(Calendar::class);
+    }
 
 }

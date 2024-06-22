@@ -24,8 +24,8 @@ class StudentTopicController extends Controller
             'departments' => $department->getDepartments(),
             'courses' => $course->orderBy('id', 'DESC')->get(),
             'teachers' => $user->where(['type' => User::TEACHER, 'status' => 1])->get(),
-            'status_outline' => StudentTopic::STATUS_OUTLINE,
-            'status' => StudentTopic::STATUS,
+            // 'status_outline' => StudentTopic::STATUS_OUTLINE,
+            // 'status' => StudentTopic::STATUS,
         ]);
     }
 
@@ -33,7 +33,7 @@ class StudentTopicController extends Controller
     {
         $studentTopics = StudentTopic::with(['student', 'topic' => function($topic) {
             $topic->with(['topic', 'department']);
-        }, 'teacher', 'course', 'result_outline_files', 'result_book_files']);
+        }, 'teacher', 'course']);
 
         //search by student code
         if ($request->code) {
@@ -70,7 +70,7 @@ class StudentTopicController extends Controller
     {
         $student = StudentTopic::with(['student', 'topic' => function($topic) {
             $topic->with(['topic', 'department']);
-        }, 'teacher', 'result_outline_files', 'result_book_files'])->find($id);
+        }, 'teacher'])->find($id);
 
 
         if (!$student) {
@@ -301,7 +301,7 @@ class StudentTopicController extends Controller
     {
         $student = StudentTopic::with(['student', 'topic' => function($topic) {
             $topic->with(['topic', 'department']);
-        }, 'teacher', 'result_outline_files', 'result_book_files'])->find($id);
+        }, 'teacher'])->find($id);
 
         $type = $request->type ?? 1;
         $result_files = ResultFile::where(['rf_student_topic_id' => $id, 'rf_type' => $type])->get();

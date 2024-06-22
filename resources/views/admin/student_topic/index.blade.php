@@ -99,13 +99,13 @@
                                     <td style="vertical-align: middle">{{ isset($student->course) ? $student->course->c_name : '' }}</td>
                                     <td style="vertical-align: middle">{{ isset($student->topic) ?  $student->topic->department->dp_name : '' }}</td>
                                     <td style="vertical-align: middle">
-                                        <p style="margin: 2px">{{ isset($status_outline[$student->st_status_outline]) ? $status_outline[$student->st_status_outline] : 'Chưa nộp' }}</p>
+                                        {{-- <p style="margin: 2px">{{ isset($status_outline[$student->st_status_outline]) ? $status_outline[$student->st_status_outline] : 'Chưa nộp' }}</p>
                                         @if ($student->result_outline_files()->count() > 0)
                                         <a href="{{ route('student.topics.view.files', ['id' => $student->id, 'type' => 1]) }}" target="_blank" >Danh sách file {{ $student->result_outline_files()->count() }}</a>
-                                        @endif
+                                        @endif --}}
                                     </td>
                                     <td style="vertical-align: middle">
-                                        @php
+                                        {{-- @php
                                             $number_file = 0;
                                             $total_point = 0;
                                         @endphp
@@ -115,7 +115,7 @@
                                                 @php $total_point = $total_point + $outline_file->rf_point; @endphp
                                             @endif
                                         @endforeach
-                                        {{ $total_point > 0 ? round($total_point / $number_file, 2) : 0 }}
+                                        {{ $total_point > 0 ? round($total_point / $number_file, 2) : 0 }} --}}
                                     </td>
 
                                     @if ($user->can(['toan-quyen-quan-ly', 'nhan-set-va-cham-diem-de-tai', 'xoa-de-tai-sinh-vien-dang-ky']))

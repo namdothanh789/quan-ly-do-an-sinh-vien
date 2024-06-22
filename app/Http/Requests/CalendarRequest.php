@@ -27,6 +27,8 @@ class CalendarRequest extends FormRequest
         $rules = [
             'title'     => 'required',
             'contents'     => 'required',
+            'status'     => 'required',
+            'type'     => 'required',
         ];
 
         if ($request->submit == 'create') {
@@ -52,6 +54,7 @@ class CalendarRequest extends FormRequest
             'title.required'       => 'Dữ liệu không được phép để trống',
             'contents.required'            => 'Dữ liệu không được phép để trống',
             'status.required'            => 'Dữ liệu không được phép để trống',
+            'type.required'            => 'Cần chọn loại file báo cáo/file đồ án',
             'start_date.required'            => 'Dữ liệu không được phép để trống',
             'end_date.required'            => 'Dữ liệu không được phép để trống',
             'start_date.after'            => 'Ngày bắt đầu phải lớn hơn ngày hiện tại',
