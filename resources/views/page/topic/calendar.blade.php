@@ -61,7 +61,7 @@
                                                     <a href="{{ route('file.result', ['id' => $calendar->id, 'type' => $calendar->type]) }}" class="work-content" >Gửi file</a>
                                                 </td>
                                                 <td style="vertical-align: middle">
-                                                    <span class="{{ $classStatus[$calendar->status] }}">{{ $status[$calendar->status] }}</span>
+                                                    <span style="color: white; font-weight: bold;" class="{{ $classStatus[$calendar->status] }}">{{ $status[$calendar->status] }}</span>
                                                 </td>
                                                 <td style="vertical-align: middle">
                                                     @if ($calendar->type == 0)

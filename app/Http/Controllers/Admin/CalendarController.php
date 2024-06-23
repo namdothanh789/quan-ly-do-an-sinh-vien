@@ -7,10 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CalendarRequest;
 use App\Models\Calendar;
 use App\Models\StudentTopic;
+use App\Models\ResultFile;
 use App\Helpers\MailHelper;
+use App\Traits\ResultFileUploadTrait;
 
 class CalendarController extends Controller
 {
+    use ResultFileUploadTrait;
     protected  $calendar;
 
     public function __construct(Calendar $calendar)
@@ -31,7 +34,7 @@ class CalendarController extends Controller
     public function index(Request $request, $id)
     {
         //
-        $calendars = Calendar::where('student_topic_id', $id)->paginate(NUMBER_PAGINATION);
+        $calendars = Calendar::with('resultFile')->where('student_topic_id', $id)->paginate(NUMBER_PAGINATION);
         $topic = StudentTopic::with(['topic' => function($query) {
             $query->with('topic');
         }, 'student'])->find($id);
@@ -153,15 +156,18 @@ class CalendarController extends Controller
      */
     public function delete($id)
     {
-        //
-        $calendar = Calendar::findOrFail($id);
+        $calendar = Calendar::with('resultFile')->findOrFail($id);
 
         if (!$calendar) {
             return redirect()->back()->with('error', 'Dữ liệu không tồn tại');
         }
 
         try {
+            if (isset($calendar->resultFile) && isset($calendar->resultFile->rf_path)) {
+                $this->deleteResultFile($calendar->resultFile->rf_path);
+            }
             $calendar->delete();
+
             return redirect()->back()->with('success', 'Xóa thành công');
         } catch (\Exception $exception) {
             return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể xóa dữ liệu');
@@ -186,5 +192,12 @@ class CalendarController extends Controller
                 'message' => 'Thành công'
             ]);
         }
+    }
+
+    public function downloadFile($id)
+    {
+        $result_file = ResultFile::findOrFail($id);
+
+        return response()->download(public_path($result_file->rf_path));
     }
 }

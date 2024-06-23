@@ -63,8 +63,8 @@
                                                     <a href="" class="work-content" calendar="{{ $calendar->id }}">Nội dung công việc</a>
                                                 </td>
                                                 <td style="vertical-align: middle">
-                                                    @if (!empty($calendar->file_result) && !empty($calendar->file_result))
-                                                        <a href="{!! asset('uploads/calendar/' . $calendar->file_result) !!}" target="_blank" download>Dowload</a>
+                                                    @if (!empty($calendar->resultFile) && !empty($calendar->resultFile->rf_path))
+                                                        <a href="{{ route('calendar.file.result.download', ['id' => $calendar->resultFile->id]) }}" target="_blank" download>Dowload file</a>
                                                     @endif
                                                 </td>
                                                 <td style="vertical-align: middle">
@@ -72,6 +72,11 @@
                                                 </td>
                                                 @if ($user->can(['toan-quyen-quan-ly', 'chinh-sua-phan-cong-cong-viec', 'xoa-phan-cong-cong-viec']))
                                                 <td class="text-center" style="vertical-align: middle">
+                                                    @if ($user->can(['toan-quyen-quan-ly', 'nhan-set-va-cham-diem-de-tai']) && isset($calendar->resultFile) && isset($calendar->resultFile->rf_path))
+                                                    <a class="btn btn-info btn-sm" href="{{ route('student.topics.update', $calendar->id) }}">
+                                                        <i class="fa fa-trophy"></i>
+                                                    </a>
+                                                    @endif
                                                     @if ($user->can(['toan-quyen-quan-ly', 'chinh-sua-phan-cong-cong-viec']))
                                                     <a class="btn btn-primary btn-sm" href="{{ route('calendar.update', $calendar->id) }}">
                                                         <i class="fas fa-pencil-alt"></i>

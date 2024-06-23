@@ -12,7 +12,7 @@ trait ResultFileUploadTrait {
 
             $resultFile = $request->{$inputName};
             $ext = $resultFile->getClientOriginalExtension();
-            $resultFileName = 'calendarId_'.$calendarId.'_'.uniqid().'.'.$ext;
+            $resultFileName = 'resultFile_'.uniqid().'.'.$ext;
 
             $resultFile->move(public_path($path), $resultFileName);
 
@@ -29,7 +29,7 @@ trait ResultFileUploadTrait {
 
             $resultFile = $request->{$inputName};
             $ext = $resultFile->getClientOriginalExtension();
-            $resultFileName = 'calendarId_'.$calendarId.'_'.uniqid().'.'.$ext;
+            $resultFileName = 'resultFile_'.uniqid().'.'.$ext;
 
             $resultFile->move(public_path($path), $resultFileName);
 
@@ -38,7 +38,7 @@ trait ResultFileUploadTrait {
     }
 
     /** Handle Delte File */
-    public function deleteImage(string $path)
+    public function deleteResultFile(string $path)
     {
         if(File::exists(public_path($path))){
             File::delete(public_path($path));

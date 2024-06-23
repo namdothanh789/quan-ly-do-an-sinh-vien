@@ -9,9 +9,11 @@ use App\Models\Course;
 use App\Models\User;
 use App\Models\StudentTopic;
 use App\Models\ResultFile;
+use App\Models\Calendar;
 use App\Http\Requests\UpdateOutlineRequest;
 use App\Http\Requests\UpdateThesisBookRequest;
 use App\Helpers\MailHelper;
+use App\Http\Requests\ResultFilePointRequest;
 use Illuminate\Support\Facades\Auth;
 
 class StudentTopicController extends Controller
@@ -66,17 +68,20 @@ class StudentTopicController extends Controller
         return view('admin.student_topic.index', $viewData);
     }
 
-    public function edit($id)
+    public function evaluate($id)
     {
-        $student = StudentTopic::with(['student', 'topic' => function($topic) {
-            $topic->with(['topic', 'department']);
-        }, 'teacher'])->find($id);
+        $calendar = Calendar::with('resultFile')->find($id);
+        $status = Calendar::STATUS;
+
+        // $student = StudentTopic::with(['student', 'topic' => function($topic) {
+        //     $topic->with(['topic', 'department']);
+        // }, 'teacher'])->find($id);
 
 
-        if (!$student) {
+        if (!$calendar) {
             return redirect()->route('student.topics.index')->with('danger', 'Dữ liệu không tồn tại');
         }
-        return view('admin.student_topic.edit', compact('student'));
+        return view('admin.student_topic.edit', compact('calendar','status'));
 
     }
 
@@ -237,38 +242,36 @@ class StudentTopicController extends Controller
         }
     }
 
-    public function updateStudentTopic(Request $request, $id)
+    public function updateStudentTopicResultFile(ResultFilePointRequest $request, $id)
     {
-        $attributes = $request->except('_token');
+        $attributes = $request->except('_token', 'status');
         $user = Auth::user();
+        $calendar = Calendar::with('resultFile')->findOrFail($id);
+        $resultFile = $calendar->resultFile;
 
-        $student = StudentTopic::with(['student', 'topic' => function($topic) {
+        $studentTopic = StudentTopic::with(['student', 'topic' => function($topic) {
             $topic->with(['topic', 'department']);
-        }, 'teacher'])->find($id);
+        }, 'teacher'])->find($calendar->student_topic_id);
 
         \DB::beginTransaction();
         try {
-            if ($student->update($attributes)) {
-                $status = StudentTopic::STATUS;
-                if ($student->st_status) {
-                    $dataMail = [
-                        'subject' => 'Thông báo kết quả và đánh giá đề tài đồ án',
-                        'name_teacher' => $user->name,
-                        'name_student' => isset($student->student) ? $student->student->name : '',
-                        'email' => isset($student->student) ? $student->student->email : '',
-                        'topic' => $student->topic->topic->t_title,
-                        'title' => $student->st_thesis_book,
-                        'link_download' => '',
-                        'comments' => $student->st_comments,
-                        'status' => isset($status[$student->st_status]) ? $status[$student->st_status] : '',
-                        'point'  => $student->st_point,
-                        'outline_status' => 0,
-                        'teacher_status' => 1,
-                        'topic' => 1
-                    ];
+            if ($resultFile->update($attributes) && $calendar->update(['status' => $request->status])) {
+                $status = Calendar::STATUS;
+                $dataMail = [
+                    'subject' => 'Thông báo kết quả và đánh giá file báo cáo',
+                    'name_teacher' => $user->name,
+                    'name_student' => isset($studentTopic->student) ? $studentTopic->student->name : '',
+                    'email' => isset($studentTopic->student) ? $studentTopic->student->email : '',
+                    'topic' => $studentTopic->topic->topic->t_title,
+                    'file_title' => $resultFile->rf_title,
+                    'comments' => $resultFile->rf_comment,
+                    'status' => isset($status[$calendar->status]) ? $status[$calendar->status] : '',
+                    'point'  => $resultFile->rf_point,
+                    'teacher_status' => 1,
+                    'type' => $resultFile->rf_type, //0-file báo cáo, 1-file đề cương
+                ];
 
-                    MailHelper::sendMailOutline($dataMail);
-                }
+                MailHelper::sendMailEvaluateFile($dataMail);
             }
             \DB::commit();
             return redirect()->back()->with('success','Cập nhật thành công');

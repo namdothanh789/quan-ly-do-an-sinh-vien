@@ -38,9 +38,9 @@ class Calendar extends Model
     ];
 
     const STUDENT_CLASS_STATUS = [
-        0 => 'badge badge-pill bg-gradient-primary',
-        1 => 'badge badge-pill bg-gradient-secondary',
-        2 => 'badge badge-pill bg-gradient-success',
+        0 => 'badge badge-lg badge-pill bg-gradient-primary',
+        1 => 'badge badge-lg badge-pill bg-gradient-info',
+        2 => 'badge badge-lg badge-pill bg-gradient-success',
     ];
 
     public function studentTopic()
@@ -55,7 +55,7 @@ class Calendar extends Model
      */
     public function createOrUpdate($request , $id ='')
     {
-        $params = $request->except(['_token', 'images']);
+        $params = $request->except(['_token']);
 
         if ($id) {
             return $this->find($id)->update($params);

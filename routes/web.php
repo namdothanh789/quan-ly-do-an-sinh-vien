@@ -169,11 +169,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
         });
 
         Route::group(['prefix' => 'student-topics'], function(){
-            Route::get('/','StudentTopicController@index')->name('student.topics.index')->middleware('permission:quan-ly-danh-sach-dang-ky-de-tai|toan-quyen-quan-ly'); //màn hiện danh sách đề tài cùng sinh viên của giảng viên.
-            Route::get('/update/{id}','StudentTopicController@edit')->name('student.topics.update')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');
-            Route::post('/update/outline{id}','StudentTopicController@updateOutline')->name('student.update.outline')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');
-            Route::post('/update/thesis/book{id}','StudentTopicController@updateThesisBook')->name('student.update.thesis.book')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');// route này đang ko dùng
-            Route::post('/update/student/topics{id}','StudentTopicController@updateStudentTopic')->name('update.student.topic')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');//route này đang ko dùng
+            Route::get('/','StudentTopicController@index')->name('student.topics.index')->middleware('permission:quan-ly-danh-sach-dang-ky-de-tai|toan-quyen-quan-ly'); //màn hiện danh sách đề tài cùng sinh viên làm đề tài của giảng viên.
+            Route::get('/update/{id}','StudentTopicController@evaluate')->name('student.topics.update')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly'); //màn đánh giá file báo cáo
+            // Route::post('/update/outline{id}','StudentTopicController@updateOutline')->name('student.update.outline')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');//route này đang ko dùng
+            // Route::post('/update/thesis/book{id}','StudentTopicController@updateThesisBook')->name('student.update.thesis.book')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');// route này đang ko dùng
+            Route::post('/update/{id}','StudentTopicController@updateStudentTopicResultFile')->name('student.topics.update')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');
             Route::get('/delete/{id}', 'StudentTopicController@delete')->name('student.topics.delete')->middleware('permission:xoa-de-tai-sinh-vien-dang-ky|toan-quyen-quan-ly');
 
             Route::get('/view/files/{id}','StudentTopicController@viewFileReport')->name('student.topics.view.files');//nếu như có file thì mới hiện link
@@ -199,6 +199,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             Route::get('/{id}','CalendarController@index')->name('calendar.index')->middleware('permission:toan-quyen-quan-ly|danh-sach-phan-cong-cong-viec');
             Route::get('/create/{id}','CalendarController@create')->name('calendar.create')->middleware('permission:toan-quyen-quan-ly|them-moi-phan-cong-cong-viec');
             Route::post('/create/{id}','CalendarController@store');
+            Route::get('/file/result/download/{id}', 'CalendarController@downloadFile')->name('calendar.file.result.download');
 
             Route::get('/update/{id}','CalendarController@edit')->name('calendar.update')->middleware('permission:toan-quyen-quan-ly|chinh-sua-phan-cong-cong-viec');
             Route::post('/update/{id}','CalendarController@update');
@@ -248,12 +249,12 @@ Route::group(['namespace' => 'Page'], function() {
             Route::get('topic/register/details', 'UserController@registerDetails')->name('user.topic.details');//màn "Đề tài đã đăng ký của sinh viên"
             Route::post('update/profile', 'UserController@updateProfile')->name('update.user.profile');
 
-            Route::get('/outline', 'UserController@outline')->name('user.outline'); //submit outline file screen
-            Route::post('/post/outline/{id}', 'UserController@postOutline')->name('user.post.outline');
-            Route::get('/download/file/{id}', 'UserController@downloadFile')->name('download.file.outline'); //route này đang ko dùng
+            // Route::get('/outline', 'UserController@outline')->name('user.outline'); //submit outline file screen
+            // Route::post('/post/outline/{id}', 'UserController@postOutline')->name('user.post.outline');
+            // Route::get('/download/file/{id}', 'UserController@downloadFile')->name('download.file.outline'); //route này đang ko dùng
 
-            Route::get('/thesis/book', 'UserController@thesisBook')->name('user.thesis.book');
-            Route::post('/post/thesis/book/{id}', 'UserController@postThesisBook')->name('user.post.thesis.book');
+            // Route::get('/thesis/book', 'UserController@thesisBook')->name('user.thesis.book');
+            // Route::post('/post/thesis/book/{id}', 'UserController@postThesisBook')->name('user.post.thesis.book');
 
             Route::get('cancel/registration/{id}', 'UserController@cancel')->name('user.cancel.registration');//nút 'Hủy đăng ký' trong màn "Đề tài đã đăng ký của sinh viên"
 

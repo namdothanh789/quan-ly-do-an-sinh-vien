@@ -13,7 +13,6 @@ use App\Models\User;
 use App\Http\Requests\UserUpdateInforProfileRequest;
 use App\Http\Requests\OutlineRequest;
 use App\Http\Requests\ThesisBookRequest;
-// use App\Http\Requests\CalendarFileResultRequest;
 use App\Helpers\MailHelper;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Models\Calendar;
@@ -88,159 +87,159 @@ class UserController extends Controller
         return view('page.topic.register_details', compact('studentTopic', 'numberStudent'));
     }
 
-    public function outline()
-    {
-        $user = Auth::guard('students')->user();
+    // public function outline()
+    // {
+    //     $user = Auth::guard('students')->user();
 
-        $param = [
-            'st_student_id' => $user->id,
-            'st_course_id' => $user->course_id
-        ];
-        $studentTopic = StudentTopic::with(['topic' => function($topic) {
-            $topic->with(['topic', 'department']);
-        }, 'teacher'])->where($param)->first();
+    //     $param = [
+    //         'st_student_id' => $user->id,
+    //         'st_course_id' => $user->course_id
+    //     ];
+    //     $studentTopic = StudentTopic::with(['topic' => function($topic) {
+    //         $topic->with(['topic', 'department']);
+    //     }, 'teacher'])->where($param)->first();
 
-        $result_files = ResultFile::where(['rf_student_topic_id' => $studentTopic->id, 'rf_type' => 1])->get();
+    //     $result_files = ResultFile::where(['rf_student_topic_id' => $studentTopic->id, 'rf_type' => 1])->get();
 
-        return view('page.topic.outline', compact('studentTopic', 'result_files'));
-
-
-    }
-
-    public function postOutline(OutlineRequest $request, $id)
-    {
-        $user = Auth::guard('students')->user();
-
-        $studentTopic = StudentTopic::with(['teacher', 'topic' => function ($topic) {
-            $topic->with('topic');
-        }])->find($id);
-
-        if (!$studentTopic) {
-            return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể nộp đề cương');
-        }
-        if (!checkInTime($studentTopic->topic->tc_start_outline, $studentTopic->topic->tc_end_outline)) {
-            return redirect()->back()->with('error', 'Hết thời gian nộp đề cương');
-        }
-        try {
-            if($request->hasfile('outline_part'))
-            {
-                $file = $request->file('outline_part');
-                $st_outline_part = date('YmdHms').'-'. $user->code .'-'.$file->getClientOriginalName();
-                $file->move(public_path().'/uploads/documents/', date('YmdHms'). $user->code .$file->getClientOriginalName());
-            }
-
-            $data = [
-                'rf_student_topic_id' => $studentTopic->id,
-                'rf_title' => $request->st_outline,
-                'rf_part_file' => $st_outline_part,
-                'rf_status' => 1,
-                'rf_type' => 1,
-            ];
-
-//            $studentTopic->st_outline = $request->st_outline;
-//            $studentTopic->st_outline_part = $st_outline_part;
-            $studentTopic->st_status_outline = 1; //đã nộp
-
-            if (ResultFile::create($data)) {
-                // send mail teacher
-                $dataMail = [
-                    'subject' => 'Thông báo sinh viên ' .$user->name . ' đã nộp file đề cương',
-                    'name_teacher' => isset($studentTopic->teacher) ? $studentTopic->teacher->name : '',
-                    'name_student' => $user->name,
-                    'email' => isset($studentTopic->teacher) ? $studentTopic->teacher->email : '',
-                    'topic' => $studentTopic->topic->topic->t_title,
-                    'title' => $request->st_outline,
-                    'link_download' => $st_outline_part,
-                    'status' => 'Đã nộp',
-                    'outline_status' => 1, //1 là đề cương, 0 là đồ án
-                    'teacher_status' => 0
-                ];
-
-                MailHelper::sendMailOutline($dataMail);
-            }
-            return redirect()->back()->with('success','Nộp thành công đề cương ');
-        } catch (\Exception $exception) {
-            return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể nộp đề cương');
-        }
-
-    }
+    //     return view('page.topic.outline', compact('studentTopic', 'result_files'));
 
 
-    public function thesisBook()
-    {
-        $user = Auth::guard('students')->user();
+    // }
 
-        $param = [
-            'st_student_id' => $user->id,
-            'st_course_id' => $user->course_id
-        ];
-        $studentTopic = StudentTopic::with(['topic' => function($topic) {
-            $topic->with(['topic', 'department']);
-        }, 'teacher'])->where($param)->first();
+//     public function postOutline(OutlineRequest $request, $id)
+//     {
+//         $user = Auth::guard('students')->user();
 
-        $result_files = ResultFile::where(['rf_student_topic_id' => $studentTopic->id, 'rf_type' => 2])->get();
+//         $studentTopic = StudentTopic::with(['teacher', 'topic' => function ($topic) {
+//             $topic->with('topic');
+//         }])->find($id);
 
-        return view('page.topic.thesis_book', compact('studentTopic', 'result_files'));
-    }
+//         if (!$studentTopic) {
+//             return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể nộp đề cương');
+//         }
+//         if (!checkInTime($studentTopic->topic->tc_start_outline, $studentTopic->topic->tc_end_outline)) {
+//             return redirect()->back()->with('error', 'Hết thời gian nộp đề cương');
+//         }
+//         try {
+//             if($request->hasfile('outline_part'))
+//             {
+//                 $file = $request->file('outline_part');
+//                 $st_outline_part = date('YmdHms').'-'. $user->code .'-'.$file->getClientOriginalName();
+//                 $file->move(public_path().'/uploads/documents/', date('YmdHms'). $user->code .$file->getClientOriginalName());
+//             }
 
-    public function postThesisBook(ThesisBookRequest $request, $id)
-    {
-        $user = Auth::guard('students')->user();
+//             $data = [
+//                 'rf_student_topic_id' => $studentTopic->id,
+//                 'rf_title' => $request->st_outline,
+//                 'rf_part_file' => $st_outline_part,
+//                 'rf_status' => 1,
+//                 'rf_type' => 1,
+//             ];
 
-        $studentTopic = StudentTopic::with(['teacher', 'topic' => function ($topic) {
-            $topic->with('topic');
-        }])->find($id);
+// //            $studentTopic->st_outline = $request->st_outline;
+// //            $studentTopic->st_outline_part = $st_outline_part;
+//             $studentTopic->st_status_outline = 1; //đã nộp
 
-        if (!$studentTopic) {
-            return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể nộp quyển đồ án');
-        }
-        if (!checkInTime($studentTopic->topic->tc_start_thesis_book, $studentTopic->topic->tc_end_thesis_book)) {
-            return redirect()->back()->with('error', 'Hết thời gian nộp quyển đồ án');
-        }
-        try {
-            if($request->hasfile('thesis_book'))
-            {
-                $file = $request->file('thesis_book');
-                $thesis_book = date('YmdHms').'-'. $user->code .'-'.$file->getClientOriginalName();
-                $file->move(public_path().'/uploads/documents/', date('YmdHms'). $user->code .$file->getClientOriginalName());
-            }
+//             if (ResultFile::create($data)) {
+//                 // send mail teacher
+//                 $dataMail = [
+//                     'subject' => 'Thông báo sinh viên ' .$user->name . ' đã nộp file đề cương',
+//                     'name_teacher' => isset($studentTopic->teacher) ? $studentTopic->teacher->name : '',
+//                     'name_student' => $user->name,
+//                     'email' => isset($studentTopic->teacher) ? $studentTopic->teacher->email : '',
+//                     'topic' => $studentTopic->topic->topic->t_title,
+//                     'title' => $request->st_outline,
+//                     'link_download' => $st_outline_part,
+//                     'status' => 'Đã nộp',
+//                     'outline_status' => 1, //1 là đề cương, 0 là đồ án
+//                     'teacher_status' => 0
+//                 ];
 
-            $data = [
-                'rf_student_topic_id' => $studentTopic->id,
-                'rf_title' => $request->st_thesis_book,
-                'rf_part_file' => $thesis_book,
-                'rf_status' => 1,
-                'rf_type' => 2,
-            ];
+//                 MailHelper::sendMailOutline($dataMail);
+//             }
+//             return redirect()->back()->with('success','Nộp thành công đề cương ');
+//         } catch (\Exception $exception) {
+//             return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể nộp đề cương');
+//         }
 
-//            $studentTopic->st_thesis_book = $request->st_thesis_book;
-//            $studentTopic->st_thesis_book_part = $thesis_book;
-            $studentTopic->st_status_thesis_book = 1;
+//     }
 
-            if (ResultFile::create($data)) {
-                // send mail teacher
 
-                $dataMail = [
-                    'subject' => 'Thông báo sinh viên ' .$user->name . ' đã nộp file đồ án',
-                    'name_teacher' => isset($studentTopic->teacher) ? $studentTopic->teacher->name : '',
-                    'name_student' => $user->name,
-                    'email' => isset($studentTopic->teacher) ? $studentTopic->teacher->email : '',
-                    'topic' => $studentTopic->topic->topic->t_title,
-                    'title' => $request->st_thesis_book,
-                    'link_download' => $thesis_book,
-                    'status' => 'Đã nộp',
-                    'outline_status' => 0, //1 là đề cương, 0 là đồ án
-                    'teacher_status' => 0
-                ];
+    // public function thesisBook()
+    // {
+    //     $user = Auth::guard('students')->user();
 
-                MailHelper::sendMailOutline($dataMail);
+    //     $param = [
+    //         'st_student_id' => $user->id,
+    //         'st_course_id' => $user->course_id
+    //     ];
+    //     $studentTopic = StudentTopic::with(['topic' => function($topic) {
+    //         $topic->with(['topic', 'department']);
+    //     }, 'teacher'])->where($param)->first();
 
-            }
-            return redirect()->back()->with('success','Nộp thành công đồ án');
-        } catch (\Exception $exception) {
-            return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể nộp đồ án');
-        }
-    }
+    //     $result_files = ResultFile::where(['rf_student_topic_id' => $studentTopic->id, 'rf_type' => 2])->get();
+
+    //     return view('page.topic.thesis_book', compact('studentTopic', 'result_files'));
+    // }
+
+//     public function postThesisBook(ThesisBookRequest $request, $id)
+//     {
+//         $user = Auth::guard('students')->user();
+
+//         $studentTopic = StudentTopic::with(['teacher', 'topic' => function ($topic) {
+//             $topic->with('topic');
+//         }])->find($id);
+
+//         if (!$studentTopic) {
+//             return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể nộp quyển đồ án');
+//         }
+//         if (!checkInTime($studentTopic->topic->tc_start_thesis_book, $studentTopic->topic->tc_end_thesis_book)) {
+//             return redirect()->back()->with('error', 'Hết thời gian nộp quyển đồ án');
+//         }
+//         try {
+//             if($request->hasfile('thesis_book'))
+//             {
+//                 $file = $request->file('thesis_book');
+//                 $thesis_book = date('YmdHms').'-'. $user->code .'-'.$file->getClientOriginalName();
+//                 $file->move(public_path().'/uploads/documents/', date('YmdHms'). $user->code .$file->getClientOriginalName());
+//             }
+
+//             $data = [
+//                 'rf_student_topic_id' => $studentTopic->id,
+//                 'rf_title' => $request->st_thesis_book,
+//                 'rf_part_file' => $thesis_book,
+//                 'rf_status' => 1,
+//                 'rf_type' => 2,
+//             ];
+
+// //            $studentTopic->st_thesis_book = $request->st_thesis_book;
+// //            $studentTopic->st_thesis_book_part = $thesis_book;
+//             $studentTopic->st_status_thesis_book = 1;
+
+//             if (ResultFile::create($data)) {
+//                 // send mail teacher
+
+//                 $dataMail = [
+//                     'subject' => 'Thông báo sinh viên ' .$user->name . ' đã nộp file đồ án',
+//                     'name_teacher' => isset($studentTopic->teacher) ? $studentTopic->teacher->name : '',
+//                     'name_student' => $user->name,
+//                     'email' => isset($studentTopic->teacher) ? $studentTopic->teacher->email : '',
+//                     'topic' => $studentTopic->topic->topic->t_title,
+//                     'title' => $request->st_thesis_book,
+//                     'link_download' => $thesis_book,
+//                     'status' => 'Đã nộp',
+//                     'outline_status' => 0, //1 là đề cương, 0 là đồ án
+//                     'teacher_status' => 0
+//                 ];
+
+//                 MailHelper::sendMailOutline($dataMail);
+
+//             }
+//             return redirect()->back()->with('success','Nộp thành công đồ án');
+//         } catch (\Exception $exception) {
+//             return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể nộp đồ án');
+//         }
+//     }
 
     public function cancel($id)
     {

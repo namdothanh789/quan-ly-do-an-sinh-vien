@@ -65,11 +65,11 @@ class MailHelper
         dispatch(new SendMailJob($mailJob));
     }
 
-    public static function sendMailOutline($data)
+    public static function sendMailEvaluateFile($data)
     {
         $mailJob = new GeneralMail();
         $mailJob->setFromDefault()
-            ->setView('emails.outline', $data)
+            ->setView('emails.resultFile', $data)
             ->setSubject($data['subject'])
             ->setTo($data['email']);
         dispatch(new SendMailJob($mailJob));

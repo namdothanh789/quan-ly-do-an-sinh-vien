@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class CalendarRequest extends FormRequest
 {
@@ -25,26 +26,38 @@ class CalendarRequest extends FormRequest
     public function rules(Request $request)
     {
         $rules = [
-            'title'     => 'required',
-            'contents'     => 'required',
-            'status'     => 'required',
-            'type'     => 'required',
+            'title'     => 'required|max:255',
+            'contents'  => 'required',
+            'status'    => 'required|in:0,1,2',
+            'type'      => 'required|in:0,1',
+            'start_date' => [
+                'required',
+            ],
+            'end_date' => [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    $startDate = $request->input('start_date');
+                    if (Carbon::parse($value)->isBefore(Carbon::parse($startDate))) {
+                        $fail('Thời gian kết thúc phải trùng hoặc sau thời gian bắt đầu.');
+                    }
+                },
+            ],
         ];
 
-        if ($request->submit == 'create') {
-            $rules['start_date'] = 'nullable|after:today';
-            if ($this->request->has('start_date') && $this->request->get('start_date') != $this->request->get('end_date')) {
-                $rules['end_date'] = 'nullable|after:start_date';
-            } else {
-                $rules['end_date'] = 'nullable|after:today';
-            }
+        if ($request->input('status') == 0) {
+            $rules['start_date'][] = function ($attribute, $value, $fail) {
+                if (Carbon::parse($value)->isBefore(Carbon::now())) {
+                    $fail('Thời gian bắt đầu phải sau thời gian hiện tại.');
+                }
+            };
+
+            $rules['end_date'][] = function ($attribute, $value, $fail) {
+                if (Carbon::parse($value)->isBefore(Carbon::now())) {
+                    $fail('Thời gian kết thúc phải sau thời gian hiện tại.');
+                }
+            };
         }
-        if ($request->submit == 'update') {
-            if ($this->request->has('start_date') && $this->request->get('start_date') != $this->request->get('end_date')) {
-                $rules['start_date'] = 'nullable';
-                $rules['end_date'] = 'nullable|after:start_date';
-            }
-        }
+
         return $rules;
     }
 
@@ -52,13 +65,11 @@ class CalendarRequest extends FormRequest
     {
         return [
             'title.required'       => 'Dữ liệu không được phép để trống',
-            'contents.required'            => 'Dữ liệu không được phép để trống',
-            'status.required'            => 'Dữ liệu không được phép để trống',
-            'type.required'            => 'Cần chọn loại file báo cáo/file đồ án',
-            'start_date.required'            => 'Dữ liệu không được phép để trống',
-            'end_date.required'            => 'Dữ liệu không được phép để trống',
-            'start_date.after'            => 'Ngày bắt đầu phải lớn hơn ngày hiện tại',
-            'end_date.after'            => 'Ngày kết thúc phải lớn hơn ngày bắt đầu và ngày hiện tại',
+            'contents.required'    => 'Dữ liệu không được phép để trống',
+            'status.required'      => 'Dữ liệu không được phép để trống',
+            'type.required'        => 'Cần chọn loại file báo cáo/file đồ án',
+            'start_date.required'  => 'Cần chọn thời gian bắt đầu',
+            'end_date.required'    => 'Cần chọn thời gian kết thúc',
         ];
     }
 }
