@@ -99,15 +99,20 @@
 
                                     @if ($user->can(['toan-quyen-quan-ly', 'nhan-set-va-cham-diem-de-tai', 'xoa-de-tai-sinh-vien-dang-ky']))
                                     <td style="vertical-align: middle">
+                                        @if ($user->can(['toan-quyen-quan-ly', 'nhan-set-va-cham-diem-de-tai']))
+                                            <a class="btn btn-success btn-sm" href="{{ route('admin.points.index', $student->id) }}">
+                                                <i class="fa fa-star"></i>
+                                            </a>
+                                        @endif
                                         @if ($user->can(['toan-quyen-quan-ly', 'xoa-de-tai-sinh-vien-dang-ky']))
-                                        <a class="btn btn-danger btn-sm btn-delete btn-confirm-delete" href="{{ route('student.topics.delete', $student->id) }}">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
+                                            <a class="btn btn-danger btn-sm btn-delete btn-confirm-delete" href="{{ route('student.topics.delete', $student->id) }}">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
                                         @endif
                                         @if ($user->can(['toan-quyen-quan-ly', 'danh-sach-phan-cong-cong-viec']))
-                                        <a class="btn btn-info btn-sm" href="{{ route('calendar.index', $student->id) }}" title="Phân công công việc">
-                                            <i class="fa fa-tasks"></i>
-                                        </a>
+                                            <a class="btn btn-info btn-sm" href="{{ route('calendar.index', $student->id) }}" title="Phân công công việc">
+                                                <i class="fa fa-tasks"></i>
+                                            </a>
                                         @endif
                                     </td>
                                     @endif

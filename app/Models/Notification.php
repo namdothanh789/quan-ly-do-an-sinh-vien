@@ -51,9 +51,15 @@ class Notification extends Model
         return $this->hasOne(User::class, 'id', 'n_user_id');
     }
 
+    //danh sách những user được gửi thông báo cuộc họp
     public function users()
     {
         return $this->belongsToMany(User::class, 'notification_users', 'nu_notification_id', 'nu_user_id')
-                    ->withPivot('nu_status');
+                    ->withPivot('nu_status', 'nu_type_user');
+    }
+    //danh sách những user chủ động gửi thông báo cuộc họp
+    public function userSentNotification()
+    {
+        return $this->belongsTo(User::class, 'n_user_id');
     }
 }

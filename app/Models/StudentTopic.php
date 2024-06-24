@@ -75,6 +75,11 @@ class StudentTopic extends Model
         return $this->hasOne(Course::class, 'id', 'st_course_id');
     }
 
+    public function calendars()
+    {
+        return $this->hasMany(Calendar::class, 'student_topic_id');
+    }
+
     // public function result_outline_files()
     // {
     //     return $this->hasMany(ResultFile::class, 'rf_student_topic_id', 'id')->where('rf_type', 1);

@@ -110,10 +110,17 @@ class User extends Authenticatable
                     ->withPivot('st_student_id');
     }
 
+    //danh sách những thông báo được gửi đến user
     public function notifications()
     {
         return $this->belongsToMany(Notification::class, 'notification_users', 'nu_user_id', 'nu_notification_id')
-                    ->withPivot('nu_status');
+                    ->withPivot('nu_status', 'nu_type_user');
+    }
+
+    //danh sách những thông báo do user chủ động gửi
+    public function sentNotifications()
+    {
+        return $this->hasMany(Notification::class, 'n_user_id');
     }
 }
 

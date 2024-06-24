@@ -208,6 +208,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             Route::post('/show','CalendarController@show')->name('calendar.show');
         });
 
+        Route::group(['prefix' =>'points'], function(){
+            Route::get('/{studentTopicId}', 'AdminPointsController@index')->name('admin.points.index');
+            Route::get('/report/{studentTopicId}', 'AdminPointsController@reportDetails')->name('admin.points.report_details');
+            Route::get('/interaction/{studentTopicId}', 'AdminPointsController@interactionDetails')->name('admin.points.interaction_details');
+        });
+
         Route::group(['prefix' => 'schedule/student'], function(){
             Route::get('/','ScheduleStudentController@index')->name('schedule.student.index')->middleware('permission:toan-quyen-quan-ly|danh-sach-lich-hen');
             Route::get('/create','ScheduleStudentController@create')->name('schedule.student.create')->middleware('permission:toan-quyen-quan-ly|them-moi-lich-hen');
