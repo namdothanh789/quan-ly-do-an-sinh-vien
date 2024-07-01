@@ -43,7 +43,7 @@ class ResultFileRequest extends FormRequest
             'rf_path.required' => 'Chưa upload file.',
             'rf_path.file' => 'File không hợp lệ.',
             'rf_path.max' => 'Kích thước file không quá 10MB.',
-            'rf_path.in' => 'Loại file hợp lệ: pdf, doc, docx, xls, xlsx, zip.',
+            'rf_path.mimes' => 'Loại file hợp lệ: pdf, doc, docx, xls, xlsx, zip.',
             'rf_type.required' => 'Cần chọn loại file.',
         ];
     }

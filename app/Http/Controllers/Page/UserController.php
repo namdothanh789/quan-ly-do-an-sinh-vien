@@ -363,6 +363,7 @@ class UserController extends Controller
             $result_file->rf_title = $request->rf_title;
             $result_file->rf_path = $resultPath;
             $result_file->rf_type = $request->rf_type;
+            $result_file->rf_point = null;
 
             $calendar->status = 1; //1 => 'Đã nộp',
             $calendar->save();

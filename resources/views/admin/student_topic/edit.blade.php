@@ -51,14 +51,14 @@
                                         <div class="form-group {{ $errors->first('rf_point') ? 'has-error' : '' }} col-md-6">
                                             <label for="inputName" class="col-sm-12 col-form-label">Điểm đề cương :</label>
                                             <div class="col-sm-12">
-                                                <input type="number" step="0.1" class="form-control" id="inputName" name="rf_point" value="" min="0">
+                                                <input type="number" step="0.1" class="form-control" id="inputName" name="rf_point" value="{{ isset($calendar->resultFile->rf_point) ? $calendar->resultFile->rf_point : '' }}" min="0">
                                                 <span class="text-danger "><p class="mg-t-5">{{ $errors->first('rf_point') }}</p></span>
                                             </div>
                                         </div>
-                                        <div class="form-group {{ $errors->first('rf_point') ? 'has-error' : '' }}">
+                                        <div class="form-group {{ $errors->first('rf_comment') ? 'has-error' : '' }}">
                                             <label for="inputName" class="col-sm-12 col-form-label">Nhận xét</label>
                                             <div class="col-sm-12">
-                                                <textarea name="rf_comment" id="rf_comment" cols="30" rows="10" class="form-control"></textarea>
+                                                <textarea name="rf_comment" id="rf_comment" cols="30" rows="10" class="form-control">{{ isset($calendar->resultFile->rf_comment) ? $calendar->resultFile->rf_comment : '' }}</textarea>
                                                 <script>
                                                     ckeditor(rf_comment);
                                                 </script>

@@ -199,7 +199,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
             Route::get('/{id}','CalendarController@index')->name('calendar.index')->middleware('permission:toan-quyen-quan-ly|danh-sach-phan-cong-cong-viec');
             Route::get('/create/{id}','CalendarController@create')->name('calendar.create')->middleware('permission:toan-quyen-quan-ly|them-moi-phan-cong-cong-viec');
             Route::post('/create/{id}','CalendarController@store');
-            Route::get('/file/result/download/{id}', 'CalendarController@downloadFile')->name('calendar.file.result.download');
+            Route::get('/file/result/download/{id}', 'CalendarController@downloadFile')->name('calendar.file.result.download');//download file báo cáo
 
             Route::get('/update/{id}','CalendarController@edit')->name('calendar.update')->middleware('permission:toan-quyen-quan-ly|chinh-sua-phan-cong-cong-viec');
             Route::post('/update/{id}','CalendarController@update');

@@ -79,7 +79,7 @@
                                     <th>Sinh viên</th>
                                     <th>Mã sinh viên</th>
                                     <th>Niên khóa</th>
-                                    <th>Bộ môn</th>
+                                    <th>Khoa/Bộ môn</th>
                                     @if ($user->can(['toan-quyen-quan-ly', 'nhan-set-va-cham-diem-de-tai', 'xoa-de-tai-sinh-vien-dang-ky']))
                                     <th class=" text-center">Hành động</th>
                                     @endif
