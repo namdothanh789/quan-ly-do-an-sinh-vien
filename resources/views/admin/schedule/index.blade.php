@@ -58,7 +58,7 @@
                                         @foreach($notifications as $notification)
                                             <tr>
                                                 <td class=" text-center" style="vertical-align: middle">{{ $i }}</td>
-                                                <td style="vertical-align: middle">{{ $notification->n_type == 6 ? 'GV :' : 'SV :' }}{{ isset($notification->user) ? $notification->user->name : '' }}</td>
+                                                <td style="vertical-align: middle">{{ $notification->n_type == 6 ? 'GV: ' : 'SV: ' }}{{ isset($notification->user) ? $notification->user->name : '' }}</td>
                                                 <td style="vertical-align: middle">
                                                     @if (isset($notification->notificationUsers))
                                                         @foreach($notification->notificationUsers as $item)

@@ -292,6 +292,12 @@ Route::group(['namespace' => 'Page'], function() {
                 Route::get('/calendar', 'NotificationController@calendar')->name('user.schedule.calendar');
                 Route::get('/calendar/show/{id}', 'NotificationController@show')->name('user.schedule.calendar.show');
             });
+            //points routes
+            Route::group(['prefix' =>'points'], function(){
+                Route::get('/{studentTopicId}', 'StudentPointsController@index')->name('user.points.index');
+                Route::get('/report/{studentTopicId}', 'StudentPointsController@reportDetails')->name('user.points.report_details');
+                Route::get('/interaction/{studentTopicId}', 'StudentPointsController@interactionDetails')->name('user.points.interaction_details');
+            });
         });
     });
 });

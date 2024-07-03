@@ -39,10 +39,11 @@ class PointCalculator
     public static function calculateInteractionPoints($studentTopicId)
     {
         $studentTopic = StudentTopic::with(['student.notifications'])->findOrFail($studentTopicId);
-        //Lấy student
+        //Lấy student có làm studentTopic
         $student = $studentTopic->student;
         //Đếm những thông báo được gửi đến student
         $totalMeetings = $student->notifications()->count();
+        //Đếm những thông báo được gửi đến student và student đã xác nhận tham gia
         $confirmedMeetings = $student->notifications()->wherePivot('nu_status', 1)->count();
         //Đếm những thông báo được student gửi 
         $sentByStudentNotifications = $student->sentNotifications;

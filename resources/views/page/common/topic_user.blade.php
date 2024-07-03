@@ -80,4 +80,30 @@
             </div>
         </div>
     </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-stats">
+            <!-- Card body -->
+            <div class="card-body" style="min-height: 142px">
+                <div class="row">
+                    <div class="col">
+                        <h5 class="card-title text-uppercase text-muted mb-0">Điểm quá trình</h5>
+                    </div>
+                    <div class="col-auto">
+                        <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                            <i class="ni ni-trophy"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    {{--<p class="mt-3 mb-0 text-sm">--}}
+                        {{--<span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>--}}
+                        {{--<span class="text-nowrap">Tỉ lệ đăng ký</span>--}}
+                    {{--</p>--}}
+                    <p class="mt-3 mb-0 text-sm col text-right">
+                        <a href="{{ route('user.points.index', ['studentTopicId' => $studentTopic->id]) }}" class="btn btn-sm btn-success">Xem điểm quá trình</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

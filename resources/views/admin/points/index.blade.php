@@ -1,5 +1,5 @@
 @extends('admin.layouts.main')
-@section('title', 'Thống kê điểm')
+@section('title', 'Thống kê điểm quá trình')
 @section('content')
 <section class="content-header">
     <div class="container-fluid">
@@ -8,7 +8,7 @@
                 <ol class="breadcrumb float-sm-left">
                     <li class="breadcrumb-item"><a href="{{ route('home') }}"> <i class="nav-icon fas fa fa-home"></i> Trang chủ</a></li>
                     {{-- <li class="breadcrumb-item"><a href="{{ route('student.topics.index') }}">Danh sách đề tài</a></li> --}}
-                    <li class="breadcrumb-item active">Thống kê điểm</li>
+                    <li class="breadcrumb-item active"> <i class="nav-icon fas fa fa-star"></i> Điểm quá trình</li>
                 </ol>
             </div>
         </div>
@@ -21,24 +21,36 @@
 <section class="content">
     <div class="container-fluid">
       <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-12">
               <div class="card">
                   <div class="card-header">
                       <h3 class="card-title">{{ $studentData['student']->name }}</h3>
                   </div>
                   <div class="card-body">
-                      <p>Task Points: {{ $studentData['task_points'] }}</p>
-                      <a href="{{ route('calendar.index', $studentData['studentTopicId']) }}" class="btn btn-primary">View Task Details</a>
-                      
-                      <p>Report Points: {{ $studentData['report_points'] }}</p>
-                      <a href="{{ route('admin.points.report_details', $studentData['studentTopicId']) }}" class="btn btn-primary">View Report Details</a>
-                      
-                      <p>Interaction Points: {{ $studentData['interaction_points'] }}</p>
-                      <a href="{{ route('admin.points.interaction_details', $studentData['studentTopicId']) }}" class="btn btn-primary">View Interaction Details</a>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 mb-2">
+                            <div class="d-flex flex-column h-100 justify-content-between">
+                                <div>Task Points: {{ $studentData['task_points'] }}</div>
+                                <a href="{{ route('calendar.index', $studentData['studentTopicId']) }}" class="btn btn-primary btn-sm mt-1">View Task Details</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12 mb-2">
+                            <div class="d-flex flex-column h-100 justify-content-between">
+                                <div>Report Points: {{ $studentData['report_points'] }}</div>
+                                <a href="{{ route('admin.points.report_details', $studentData['studentTopicId']) }}" class="btn btn-primary btn-sm mt-1">View Report Details</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12 mb-2">
+                            <div class="d-flex flex-column h-100 justify-content-between">
+                                <div>Interaction Points: {{ $studentData['interaction_points'] }}</div>
+                                <a href="{{ route('admin.points.interaction_details', $studentData['studentTopicId']) }}" class="btn btn-primary btn-sm mt-1">View Interaction Details</a>
+                            </div>
+                        </div>
+                    </div>
                   </div>
                   <div class="card-footer">
                     <h4 class="card-title">
-                        Total Points: {{ $studentData['total_points'] }}
+                        Điểm quá trình: {{ $studentData['total_points'] }}
                         <i class="fa fa-info-circle" data-toggle="tooltip" title="Điểm quá trình (theo thang 10) = (tổng 3 loại điểm) * 10/9"></i>
                     </h4>
                   </div>
@@ -50,7 +62,7 @@
           <div class="col-md-3">
               <div class="card">
                   <div class="card-header">
-                      <h3 class="card-title">Points Pie Chart</h3>
+                      <h3 class="card-title">Pie Chart: Các điểm thành phần</h3>
                   </div>
                   <div class="card-body">
                       <canvas id="pointsPieChart"></canvas>

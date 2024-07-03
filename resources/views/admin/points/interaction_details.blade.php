@@ -1,5 +1,5 @@
 @extends('admin.layouts.main')
-@section('title', '')
+@section('title', 'Thống kê điểm tương tác')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
@@ -7,8 +7,8 @@
                 <div class="col-sm-12">
                     <ol class="breadcrumb float-sm-left">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}"> <i class="nav-icon fas fa fa-home"></i> Trang chủ</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('calendar.index', $student_topic_id) }}">Phân công công việc</a></li>
-                        <li class="breadcrumb-item active">Đề tài : {{ $topic->topic->topic->t_title }} Sinh viên : {{ $topic->student->name }}</li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.points.index', ['studentTopicId' => $studentTopicId]) }}"> <i class="nav-icon fas fa fa-star"></i> Điểm quá trình</a></li>
+                        <li class="breadcrumb-item active">Thống kê điểm tương tác</li>
                     </ol>
                 </div>
             </div>
@@ -25,145 +25,157 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-tools">
-                                <div class="btn-group">
-                                    @if ($user->can(['toan-quyen-quan-ly', 'them-moi-phan-cong-cong-viec']))
-                                    <a href="{{ route('calendar.create', $student_topic_id) }}"><button type="button" class="btn btn-block btn-info"><i class="fa fa-plus"></i> Tạo mới</button></a>
-                                    @endif
-                                </div>
-                            </div>
+                            <h3 class="card-title">Danh sách lịch hẹn được gửi cho sinh viên</h3>
                         </div>
-                        <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
                             <table class="table table-hover text-nowrap table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="4%" class=" text-center">STT</th>
-                                        <th>Tiêu đề</th>
-                                        <th>Thời gian</th>
-                                        <th>Nội dung</th>
-                                        <th>Kết quả</th>
-                                        <th>Trạng thái</th>
-                                        @if ($user->can(['toan-quyen-quan-ly', 'chinh-sua-phan-cong-cong-viec', 'xoa-phan-cong-cong-viec']))
-                                        <th>Hành động</th>
-                                        @endif
+                                        <th width="5%" class=" text-center">STT</th>
+                                        <th style="width: 30%;">Tên lịch hẹn</th>
+                                        <th style="width: 15%;">Người tạo</th>
+                                        <th style="width: 20%;">Đối tượng hẹn</th>
+                                        <th style="width: 10%;">Bắt đầu</th>
+                                        <th style="width: 10%;">Kết thúc</th>
+                                        <th style="width: 10%;">Trạng thái tham gia của SV</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (!$calendars->isEmpty())
-                                        @php $i = $calendars->firstItem(); @endphp
-                                        @foreach($calendars as $calendar)
+                                    @if (!$sentToStudentNotifications->isEmpty())
+                                        @php $i = $sentToStudentNotifications->firstItem(); @endphp
+                                        @foreach($sentToStudentNotifications as $sentToStudentNotification)
                                             <tr>
-                                                <td class=" text-center" style="vertical-align: middle">{{ $i }}</td>
-                                                <td style="vertical-align: middle">{{$calendar->title}}</td>
-                                                <td style="vertical-align: middle">
-                                                    <p>{{ $calendar->start_date .' đến '.$calendar->end_date }}</p>
-                                                </td>
-                                                <td style="vertical-align: middle">
-                                                    <a href="" class="work-content" calendar="{{ $calendar->id }}">Nội dung công việc</a>
-                                                </td>
-                                                <td style="vertical-align: middle">
-                                                    @if (!empty($calendar->resultFile) && !empty($calendar->resultFile->rf_path))
-                                                        <a href="{{ route('calendar.file.result.download', ['id' => $calendar->resultFile->id]) }}" target="_blank" download>Dowload file</a>
+                                                <td class=" text-center" style="vertical-align: middle; width: 5%;">{{ $i }}</td>
+                                                <td style="vertical-align: middle; width: 30%;">{{$sentToStudentNotification->n_title}}</td>
+                                                <td style="vertical-align: middle; width: 15%;">{{ $sentToStudentNotification->n_type == 6 ? 'GV: ' : 'SV: ' }}{{ isset($sentToStudentNotification->user) ? $sentToStudentNotification->user->name : '' }}</td>
+                                                <td style="vertical-align: middle; width: 20%;">
+                                                    @if (isset($sentToStudentNotification->notificationUsers))
+                                                        @foreach($sentToStudentNotification->notificationUsers as $item)
+                                                            <p style="margin: 0px 0px 5px 0px">{{ $item->user->name }}</p>
+                                                        @endforeach
                                                     @endif
                                                 </td>
-                                                <td style="vertical-align: middle">
-                                                    <button type="button" class="btn btn-block {{ $classStatus[$calendar->status] }} btn-xs">{{ $status[$calendar->status] }}</button>
-                                                </td>
-                                                @if ($user->can(['toan-quyen-quan-ly', 'chinh-sua-phan-cong-cong-viec', 'xoa-phan-cong-cong-viec']))
-                                                <td class="text-center" style="vertical-align: middle">
-                                                    @if ($user->can(['toan-quyen-quan-ly', 'nhan-set-va-cham-diem-de-tai']) && isset($calendar->resultFile) && isset($calendar->resultFile->rf_path))
-                                                    <a class="btn btn-info btn-sm" href="{{ route('student.topics.update', $calendar->id) }}">
-                                                        <i class="fa fa-trophy"></i>
-                                                    </a>
-                                                    @endif
-                                                    @if ($user->can(['toan-quyen-quan-ly', 'chinh-sua-phan-cong-cong-viec']))
-                                                    <a class="btn btn-primary btn-sm" href="{{ route('calendar.update', $calendar->id) }}">
-                                                        <i class="fas fa-pencil-alt"></i>
-                                                    </a>
-                                                    @endif
-                                                        @if ($user->can(['toan-quyen-quan-ly', 'xoa-phan-cong-cong-viec']))
-                                                    <a class="btn btn-danger btn-sm btn-delete btn-confirm-delete" href="{{ route('calendar.delete', $calendar->id) }}">
-                                                        <i class="fas fa-trash"></i>
-                                                    </a>
-                                                    @endif
-                                                </td>
-                                                @endif
+                                                <td style="vertical-align: middle; width: 10%;">{{ !empty($sentToStudentNotification->n_from_date) ? convertDatetimeLocal($sentToStudentNotification->n_from_date) : '' }}</td>
+                                                <td style="vertical-align: middle; width: 10%;">{{ !empty($sentToStudentNotification->n_end_date) ? convertDatetimeLocal($sentToStudentNotification->n_end_date) : '' }}</td>
+                                                <td style="vertical-align: middle; width: 10%;"><button type="button" class="btn btn-block {{ $sentToStudentNotification->pivot->nu_status == 1 ? 'bg-gradient-success' : 'bg-gradient-danger' }} btn-xs">{{ $sentToStudentNotification->pivot->nu_status == 1 ? 'Tham gia' : 'Không tham gia'}}</button></td>
                                             </tr>
                                             @php $i++ @endphp
                                         @endforeach
                                     @endif
                                 </tbody>
                             </table>
-                            @if($calendars->hasPages())
+                            @if($sentToStudentNotifications->hasPages())
                                 <div class="pagination float-right margin-20">
-                                    {{ $calendars->appends($query = '')->links() }}
+                                    {{ $sentToStudentNotifications->appends($query = '')->links() }}
                                 </div>
                             @endif
                         </div>
                         <!-- /.card-body -->
                     </div>
+                    <!-- các notifications được gửi đến student-->
+                    <!-- /.card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh sách lịch hẹn giáo viên tham gia</h3>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th width="5%" class=" text-center">STT</th>
+                                        <th style="width: 30%;">Tên lịch hẹn</th>
+                                        <th style="width: 15%;">Người tạo</th>
+                                        <th style="width: 20%;">Đối tượng hẹn</th>
+                                        <th style="width: 10%;">Bắt đầu</th>
+                                        <th style="width: 10%;">Kết thúc</th>
+                                        <th style="width: 10%;">Trạng thái tham gia của GV</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (!$studentSentConfirmedNotifications->isEmpty())
+                                        @php $i = $studentSentConfirmedNotifications->firstItem(); @endphp
+                                        @foreach($studentSentConfirmedNotifications as $studentSentConfirmedNotification)
+                                            <tr>
+                                                <td class=" text-center" style="vertical-align: middle; width: 5%;">{{ $i }}</td>
+                                                <td style="vertical-align: middle; width: 30%;">{{$studentSentConfirmedNotification->n_title}}</td>
+                                                <td style="vertical-align: middle; width: 15%;">{{ $studentSentConfirmedNotification->n_type == 6 ? 'GV: ' : 'SV: ' }}{{ isset($studentSentConfirmedNotification->user) ? $studentSentConfirmedNotification->user->name : '' }}</td>
+                                                <td style="vertical-align: middle; width: 20%;">
+                                                    @if (isset($studentSentConfirmedNotification->notificationUsers))
+                                                        @foreach($studentSentConfirmedNotification->notificationUsers as $item)
+                                                            <p style="margin: 0px 0px 5px 0px">{{ $item->user->name }}</p>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
+                                                <td style="vertical-align: middle; width: 10%;">{{ !empty($studentSentConfirmedNotification->n_from_date) ? convertDatetimeLocal($studentSentConfirmedNotification->n_from_date) : '' }}</td>
+                                                <td style="vertical-align: middle; width: 10%;">{{ !empty($studentSentConfirmedNotification->n_end_date) ? convertDatetimeLocal($studentSentConfirmedNotification->n_end_date) : '' }}</td>
+                                                <td style="vertical-align: middle; width: 10%;"><button type="button" class="btn btn-block bg-gradient-success btn-xs">Tham gia</button></td>
+                                            </tr>
+                                            @php $i++ @endphp
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                            @if($studentSentConfirmedNotifications->hasPages())
+                                <div class="pagination float-right margin-20">
+                                    {{ $studentSentConfirmedNotifications->appends($query = '')->links() }}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                     <!-- các notifications do student gửi đến teacher và teacher xác nhận tham gia-->
+                    <!-- /.card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh sách lịch hẹn giáo viên không tham gia</h3>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th width="5%" class=" text-center">STT</th>
+                                        <th style="width: 30%;">Tên lịch hẹn</th>
+                                        <th style="width: 15%;">Người tạo</th>
+                                        <th style="width: 20%;">Đối tượng hẹn</th>
+                                        <th style="width: 10%;">Bắt đầu</th>
+                                        <th style="width: 10%;">Kết thúc</th>
+                                        <th style="width: 10%;">Trạng thái tham gia của GV</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (!$studentSentConfirmedNotNotifications->isEmpty())
+                                        @php $i = $studentSentConfirmedNotNotifications->firstItem(); @endphp
+                                        @foreach($studentSentConfirmedNotNotifications as $studentSentConfirmedNotNotification)
+                                            <tr>
+                                                <td class=" text-center" style="vertical-align: middle; width: 5%;">{{ $i }}</td>
+                                                <td style="vertical-align: middle; width: 30%;">{{$studentSentConfirmedNotNotification->n_title}}</td>
+                                                <td style="vertical-align: middle; width: 15%;">{{ $studentSentConfirmedNotNotification->n_type == 6 ? 'GV: ' : 'SV: ' }}{{ isset($studentSentConfirmedNotNotification->user) ? $studentSentConfirmedNotNotification->user->name : '' }}</td>
+                                                <td style="vertical-align: middle; width: 20%;">
+                                                    @if (isset($studentSentConfirmedNotNotification->notificationUsers))
+                                                        @foreach($studentSentConfirmedNotNotification->notificationUsers as $item)
+                                                            <p style="margin: 0px 0px 5px 0px">{{ $item->user->name }}</p>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
+                                                <td style="vertical-align: middle; width: 10%;">{{ !empty($studentSentConfirmedNotNotification->n_from_date) ? convertDatetimeLocal($studentSentConfirmedNotNotification->n_from_date) : '' }}</td>
+                                                <td style="vertical-align: middle; width: 10%;">{{ !empty($studentSentConfirmedNotNotification->n_end_date) ? convertDatetimeLocal($studentSentConfirmedNotNotification->n_end_date) : '' }}</td>
+                                                <td style="vertical-align: middle; width: 10%;"><button type="button" class="btn btn-block bg-gradient-danger btn-xs">Không tham gia</button></td>
+                                            </tr>
+                                            @php $i++ @endphp
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                            @if($studentSentConfirmedNotNotifications->hasPages())
+                                <div class="pagination float-right margin-20">
+                                    {{ $studentSentConfirmedNotNotifications->appends($query = '')->links() }}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                     <!-- các notifications do student gửi đến teacher và teacher xác nhận không tham gia-->
                     <!-- /.card -->
                 </div>
             </div>
         </div>
     </section>
-@stop
-
-<div class="modal modal-work-content fade" id="modal-default">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="row" style="margin: auto;">
-                    <div class="col-md-12 text-center">
-                        <h4 class="modal-title" style="text-transform: uppercase; font-weight: bold; ">Nội dung công việc</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-body">
-
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">Đóng</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.mod -->
-</div>
-
-@section('script')
-    <script>
-        $(function () {
-            var url = "{{ route('calendar.show') }}";
-            $('.work-content').click(function (event) {
-
-                event.preventDefault();
-
-                let calendar = $(this).attr('calendar');
-
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    dataType: 'json',
-                    format: "json",
-                    async: true,
-                    data : {
-                        id : calendar
-                    }
-
-                }).done(function(result) {
-
-                    if (result.code == 200) {
-                        $('.modal-body').html(result.data.contents);
-                        $(".modal-work-content").modal('show');
-                    }
-
-                });
-
-                console.log(calendar)
-            })
-        })
-    </script>
 @stop

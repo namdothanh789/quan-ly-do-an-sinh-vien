@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Page;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\StudentTopic;
 use App\Models\Calendar;
-use App\Models\ResultFile;
-use App\Models\Notification;
 use App\Helpers\PointCalculator;
 
-class AdminPointsController extends Controller
+class StudentPointsController extends Controller
 {
     public function index($studentTopicId)
     {
@@ -30,7 +28,7 @@ class AdminPointsController extends Controller
             'total_points' => $totalPoints
         ];
 
-        return view('admin.points.index', compact('studentData'));
+        return view('page.points.index', compact('studentData'));
     }
 
     public function reportDetails($studentTopicId)
@@ -44,7 +42,7 @@ class AdminPointsController extends Controller
         ->where('student_topic_id', $studentTopicId)
         ->orderByDesc('id')
         ->paginate(NUMBER_PAGINATION);
-        return view('admin.points.report_details', compact('calendars', 'studentTopicId'));
+        return view('page.points.report_details', compact('calendars', 'studentTopicId'));
     }
 
     public function interactionDetails($studentTopicId)
@@ -81,6 +79,6 @@ class AdminPointsController extends Controller
         })
         ->orderByDesc('notifications.id')
         ->paginate(NUMBER_PAGINATION);
-        return view('admin.points.interaction_details', compact('sentToStudentNotifications', 'studentSentConfirmedNotifications', 'studentSentConfirmedNotNotifications', 'studentTopicId'));
+        return view('page.points.interaction_details', compact('sentToStudentNotifications', 'studentSentConfirmedNotifications', 'studentSentConfirmedNotNotifications', 'studentTopicId'));
     }
 }
