@@ -46,14 +46,14 @@ class CalendarRequest extends FormRequest
 
         if ($request->input('status') == 0) {
             $rules['start_date'][] = function ($attribute, $value, $fail) {
-                if (Carbon::parse($value)->isBefore(Carbon::now())) {
-                    $fail('Thời gian bắt đầu phải sau thời gian hiện tại.');
+                if (Carbon::parse($value)->isBefore(Carbon::now()->startOfDay())) {
+                    $fail('Thời gian bắt đầu phải là ngày hiện tại hoặc sau ngày hiện tại.');
                 }
             };
-
+        
             $rules['end_date'][] = function ($attribute, $value, $fail) {
-                if (Carbon::parse($value)->isBefore(Carbon::now())) {
-                    $fail('Thời gian kết thúc phải sau thời gian hiện tại.');
+                if (Carbon::parse($value)->isBefore(Carbon::now()->startOfDay())) {
+                    $fail('Thời gian kết thúc phải là ngày hiện tại hoặc sau ngày hiện tại.');
                 }
             };
         }

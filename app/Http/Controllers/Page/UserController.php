@@ -248,11 +248,11 @@ class UserController extends Controller
         }])->find($id);
 
         if (!$studentTopic) {
-            return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể hủy đề tài');
+            return redirect()->back()->with('error', 'Không tìm thấy đề tài');
         }
 
         if (!checkInTime($studentTopic->topic->tc_start_time, $studentTopic->topic->tc_end_time)) {
-            return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể hủy đề tài');
+            return redirect()->back()->with('error', 'Không phải thời điểm hủy đề tài');
         }
         try {
             if ($studentTopic->delete()) {

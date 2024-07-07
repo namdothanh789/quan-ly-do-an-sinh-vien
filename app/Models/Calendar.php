@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Traits\ResultFileUploadTrait;
+use Illuminate\Support\Facades\Log;
 class Calendar extends Model
 {
+    use ResultFileUploadTrait;
     use HasFactory;
 
     protected $table = 'calendars';
@@ -66,5 +68,21 @@ class Calendar extends Model
     public function resultFile()
     {
         return $this->hasOne(ResultFile::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($calendar) {
+            if ($calendar->resultFile) {
+                try {
+                    $calendar->deleteResultFile($calendar->resultFile->rf_path);
+                    $calendar->resultFile->delete();
+                } catch (\Exception $e) {
+                    \Log::error('Failed to delete result file: ' . $e->getMessage());
+                }
+            }
+        });
     }
 }

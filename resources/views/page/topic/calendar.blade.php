@@ -58,7 +58,11 @@
                                                     <a href="{{ route('user.get.calendar.detail', $calendar->id) }}">Chi tiết công việc</a>
                                                 </td>
                                                 <td style="vertical-align: middle">
-                                                    <a href="{{ route('file.result', ['id' => $calendar->id, 'type' => $calendar->type]) }}" class="work-content" >Gửi file</a>
+                                                    @if(checkTimeInDays($calendar->end_date) >= 0)
+                                                        <a href="{{ route('file.result', ['id' => $calendar->id, 'type' => $calendar->type]) }}" class="work-content">Gửi file</a>
+                                                    @else
+                                                        <span style="color: white; font-weight: bold;" class="badge badge-lg badge-pill bg-gradient-danger">Hết hạn nộp</span>
+                                                    @endif
                                                 </td>
                                                 <td style="vertical-align: middle">
                                                     <span style="color: white; font-weight: bold;" class="{{ $classStatus[$calendar->status] }}">{{ $status[$calendar->status] }}</span>

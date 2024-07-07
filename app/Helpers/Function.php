@@ -168,6 +168,14 @@ function checkTime($dateTime) {
     return $checkTime;
 }
 
+function checkTimeInDays($dateTime) {
+    $currentDate = Carbon::now()->startOfDay();
+    $checkDate = Carbon::parse($dateTime)->startOfDay();
+    $diffInDays = $currentDate->diffInDays($checkDate, false);
+
+    return $diffInDays;
+}
+
 if (!function_exists('checkInTime')) {
 
     function checkInTime($startedAt, $endAt) {

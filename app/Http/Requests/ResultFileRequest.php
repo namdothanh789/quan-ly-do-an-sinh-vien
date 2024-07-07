@@ -25,7 +25,19 @@ class ResultFileRequest extends FormRequest
     {
         return [
             'rf_title' => 'required|max:255',
-            'rf_path' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx,pptx,zip', // Kích thước tối đa 10MB
+            'rf_path' => [
+                'required',
+                'file',
+                'max:10240',
+                function ($attribute, $value, $fail) {
+                    $allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'pptx', 'zip'];
+                    $extension = strtolower($value->getClientOriginalExtension());
+                    
+                    if (!in_array($extension, $allowedExtensions)) {
+                        $fail('Các định dạng file được phép tải lên: ' . implode(', ', $allowedExtensions) . '.');
+                    }
+                },
+            ],
             'rf_type' => 'required',
         ];
     }
@@ -43,7 +55,7 @@ class ResultFileRequest extends FormRequest
             'rf_path.required' => 'Chưa upload file.',
             'rf_path.file' => 'File không hợp lệ.',
             'rf_path.max' => 'Kích thước file không quá 10MB.',
-            'rf_path.mimes' => 'Loại file hợp lệ: pdf, doc, docx, xls, xlsx, zip.',
+            'rf_path.mimes' => 'Loại file hợp lệ: pdf, doc, docx, xls, xlsx, pptx, zip.',
             'rf_type.required' => 'Cần chọn loại file.',
         ];
     }

@@ -89,4 +89,30 @@ class StudentTopic extends Model
     // {
     //     return $this->hasMany(ResultFile::class, 'rf_student_topic_id', 'id')->where('rf_type', 2);
     // }
+    /**
+     * The "booting" method of the model.
+     *
+     * This method is called when the model is being booted. It sets up a
+     * deleting event listener to perform cleanup operations when a StudentTopic
+     * instance is being deleted.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        /**
+         * Delete related notifications when a StudentTopic is being deleted.
+         *
+         * @param \App\Models\StudentTopic $studentTopic The StudentTopic instance being deleted.
+         * @return void
+         */
+        static::deleting(function ($studentTopic) {
+            // Delete notifications where the student is the sender
+            Notification::where('n_user_id', $studentTopic->st_student_id)->delete();
+
+            // Delete notification_users entries for this student
+            NotificationUser::where('nu_user_id', $studentTopic->st_student_id)->delete();
+        });
+    }
 }
