@@ -42,7 +42,7 @@
                                         <th>Tiêu đề</th>
                                         <th>Thời gian</th>
                                         <th>Nội dung</th>
-                                        <th>Kết quả</th>
+                                        <th>File (downloadable)</th>
                                         <th>Trạng thái</th>
                                         @if ($user->can(['toan-quyen-quan-ly', 'chinh-sua-phan-cong-cong-viec', 'xoa-phan-cong-cong-viec']))
                                         <th>Hành động</th>
@@ -64,7 +64,7 @@
                                                 </td>
                                                 <td style="vertical-align: middle">
                                                     @if (!empty($calendar->resultFile) && !empty($calendar->resultFile->rf_path))
-                                                        <a href="{{ route('calendar.file.result.download', ['id' => $calendar->resultFile->id]) }}" target="_blank" download>Dowload file</a>
+                                                        <a href="{{ route('calendar.file.result.download', ['id' => $calendar->resultFile->id]) }}" target="_blank" download>{{ $calendar->resultFile->rf_title }}</a>
                                                     @endif
                                                 </td>
                                                 <td style="vertical-align: middle">

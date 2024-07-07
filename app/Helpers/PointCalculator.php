@@ -69,7 +69,8 @@ class PointCalculator
         $taskPoints = self::calculateTaskPoints($studentTopicId);
         $reportPoints = self::calculateReportPoints($studentTopicId);
         $interactionPoints = self::calculateInteractionPoints($studentTopicId);
-
-        return ($taskPoints + $reportPoints + $interactionPoints) * 10 / 9;
+        $roundedPoint = ($taskPoints + $reportPoints + $interactionPoints) * 10 / 9;
+        $roundedPoint = round($roundedPoint, 2);
+        return $roundedPoint;
     }
 }

@@ -12,9 +12,7 @@ class TopicCourse extends Model
 
     protected $fillable = [
         'tc_topic_id', 'tc_course_id', 'tc_council_id',
-        'tc_department_id', 'tc_teacher_id', 'tc_start_time', 'tc_end_time', 'tc_status', 'tc_registration_number',
-        'tc_start_outline', 'tc_end_outline', 'tc_start_thesis_book', 'tc_end_thesis_book',
-        'created_at','updated_at'
+        'tc_department_id', 'tc_teacher_id', 'tc_start_time', 'tc_end_time', 'tc_status', 'tc_registration_number', 'created_at', 'updated_at'
     ];
 
     public function topic()

@@ -37,9 +37,7 @@ class TopicController extends Controller
             'st_teacher_id' => $topic->tc_teacher_id,
             'st_course_id' => $topic->tc_course_id,
         ];
-
         $studentTopic = StudentTopic::where($param)->first();
-
         if ($studentTopic) {
             return response([
                 'code' => 0,
@@ -50,7 +48,7 @@ class TopicController extends Controller
         if (!$topic) {
             return response([
                 'code' => 0,
-                'message' => 'Đã xảy ra lỗi không thể đăng ký đề tài.'
+                'message' => 'Không tìm thấy đề tài đăng ký.'
             ]);
         }
 
@@ -80,10 +78,10 @@ class TopicController extends Controller
                     'name_student' => $user->name,
                     'email' => isset($topic->teacher) ? $topic->teacher->email : '',
                     'topic' => $topic->topic->t_title,
-                    'start_outline' => $topic->tc_start_outline,
-                    'end_outline' => $topic->tc_end_outline,
-                    'start_thesis_book' => $topic->tc_start_thesis_book,
-                    'end_thesis_book' => $topic->tc_end_thesis_book,
+                    // 'start_outline' => $topic->tc_start_outline,
+                    // 'end_outline' => $topic->tc_end_outline,
+                    // 'start_thesis_book' => $topic->tc_start_thesis_book,
+                    // 'end_thesis_book' => $topic->tc_end_thesis_book,
                     'council' => $topic->council->co_title,
                 ];
                 MailHelper::sendMailRegisterTopic($dataMail);

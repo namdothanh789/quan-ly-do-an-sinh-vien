@@ -34,7 +34,7 @@
                                     <th scope="col" style="text-align: center">STT</th>
                                     <th scope="col">Tiêu đề công việc</th>
                                     <th scope="col">Thời gian</th>
-                                    <th scope="col">File báo cáo</th>
+                                    <th scope="col">File (downloadable)</th>
                                     <th scope="col">Nội dung</th>
                                     <th scope="col">Báo cáo</th>
                                     <th scope="col">Trạng thái</th>
@@ -51,7 +51,7 @@
                                                 </td>
                                                 <td style="vertical-align: middle">
                                                     @if (!empty($calendar->resultFile) && !empty($calendar->resultFile->rf_path))
-                                                        <a href="{{ route('file.result.download', ['id' => $calendar->resultFile->id]) }}" target="_blank" download>Dowload file</a>
+                                                        <a href="{{ route('file.result.download', ['id' => $calendar->resultFile->id]) }}" target="_blank" download>{{ $calendar->resultFile->rf_title }}</a>
                                                     @endif
                                                 </td>
                                                 <td style="vertical-align: middle">

@@ -123,21 +123,6 @@
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <div class="form-group {{ $errors->first('tc_start_outline') ? 'has-error' : '' }} col-md-12">
-                            <label for="inputEmail3" class="control-label default">Ngày bắt đầu làm đồ án  <sup class="text-danger">(*)</sup></label>
-                            <div>
-                                <input type="datetime-local" class="form-control" name="tc_start_outline" value="{{ old('tc_start_outline', isset($topicCourse) ? convertDatetimeLocal($topicCourse->tc_start_outline) : '') }}">
-                                <span class="text-danger"><p class="mg-t-5">{{ $errors->first('tc_start_outline') }}</p></span>
-                            </div>
-
-                        </div>
-                        <div class="form-group {{ $errors->first('tc_end_outline') ? 'has-error' : '' }} col-md-12">
-                            <label for="inputEmail3" class="control-label default">Ngày kết thúc làm đồ án <sup class="text-danger">(*)</sup></label>
-                            <div>
-                                <input type="datetime-local" class="form-control" name="tc_end_outline" value="{{ old('tc_end_outline', isset($topicCourse) ? convertDatetimeLocal($topicCourse->tc_end_outline) : '') }}">
-                                <span class="text-danger"><p class="mg-t-5">{{ $errors->first('tc_end_outline') }}</p></span>
-                            </div>
-                        </div>
                     </div>
                     <div class="card-header">
                         <h3 class="card-title">Trạng thái</h3>

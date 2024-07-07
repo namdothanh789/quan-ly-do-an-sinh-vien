@@ -6,7 +6,7 @@
             <p><b>Dear : {{ $data['name_teacher'] }}</b></p>
         @endif
         @if ($data['teacher_status'] == 1)
-            <p>Giáo viên : {{ $data['name_teacher'] }} đã đánh giá @if ($data['type'] == 1) file báo cáo @else file đồ án @endif : <b>{{ $data['file_title'] }}</b>.</p>
+            <p>Giáo viên : {{ $data['name_teacher'] }} đã đánh giá @if ($data['type'] == 1) file đồ án @else file báo cáo @endif : <b>{{ $data['file_title'] }}</b>.</p>
         @else
             <p>Sinh viên : {{ $data['name_student'] }} đã nộp @if ($data['type'] == 1) file báo cáo @else file đồ án @endif : <b>{{ $data['file_title'] }}</b>.</p>
         @endif

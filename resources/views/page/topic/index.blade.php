@@ -51,20 +51,12 @@
                                         <td>{{$topic->tc_registration_number}}</td>
                                     </tr>
                                     <tr>
-                                        <td>Ngày bắt đầu nộp đề cương : </td>
-                                        <td><b>{{$topic->tc_start_outline}}</b> </td>
+                                        <td>Ngày bắt đầu làm đồ án : </td>
+                                        <td><b>{{$topic->course->c_start_time}}</b> </td>
                                     </tr>
                                     <tr>
-                                        <td>Ngày kết thúc nộp đề cương : </td>
-                                        <td><b>{{$topic->tc_end_outline}}</b> </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ngày bắt đầu nộp báo cáo : </td>
-                                        <td><b>{{$topic->tc_start_thesis_book}}</b> </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ngày kết thúc nộp báo cáo : </td>
-                                        <td><b>{{$topic->tc_end_thesis_book}}</b> </td>
+                                        <td>Ngày kết thúc làm đồ án : </td>
+                                        <td><b>{{$topic->course->c_end_time}}</b> </td>
                                     </tr>
                                 </tbody>
                             </table>

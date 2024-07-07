@@ -5,8 +5,8 @@
         <p>Sinh viên : {{ $data['name_student'] }}</p>
         <p>Đã đăng ký đề tài : {{ $data['topic'] }}</p>
         <p>Hội đồng : {{ $data['council'] }}</p>
-        <p>Thời gian nộp đề cương : {{ $data['start_outline'] }} - {{ $data['end_outline'] }}</p>
-        <p>Thời gian nộp báo cáo : {{ $data['start_thesis_book'] }} - {{ $data['end_thesis_book'] }}</p>
+        {{-- <p>Thời gian nộp đề cương : {{ $data['start_outline'] }} - {{ $data['end_outline'] }}</p>
+        <p>Thời gian nộp báo cáo : {{ $data['start_thesis_book'] }} - {{ $data['end_thesis_book'] }}</p> --}}
 
     </div>
     <div style="background: #f4f5f5;box-sizing: border-box;padding: 15px">
