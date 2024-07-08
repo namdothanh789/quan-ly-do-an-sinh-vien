@@ -48,4 +48,17 @@ class TopicCourse extends Model
     {
         return $this->hasMany(StudentTopic::class, 'st_topic_id');
     }
+
+    // Relationship for students
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'student_topics', 'st_topic_id', 'st_student_id')
+                    ->withPivot('st_teacher_id');
+    }
+    // Relationship for teachers
+    public function teachers()
+    {
+        return $this->belongsToMany(User::class, 'student_topics', 'st_topic_id', 'st_teacher_id')
+                    ->withPivot('st_student_id');
+    }
 }

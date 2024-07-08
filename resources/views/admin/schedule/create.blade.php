@@ -39,7 +39,7 @@
                                             <select name="topic_id" class="form-control topic-select">
                                                 <option value="">Select</option>
                                                 @foreach($topics as $topic)
-                                                    <option value="{{$topic->id}}">{{$topic->t_title}}</option>
+                                                    <option value="{{$topic->id}}">{{$topic->topic->t_title}}</option>
                                                 @endforeach
                                             </select>
                                             <span class="text-danger"><p class="mg-t-5">{{ $errors->first('topic_id') }}</p></span>

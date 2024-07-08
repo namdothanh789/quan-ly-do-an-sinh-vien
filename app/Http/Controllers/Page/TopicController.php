@@ -37,7 +37,7 @@ class TopicController extends Controller
             'st_teacher_id' => $topic->tc_teacher_id,
             'st_course_id' => $topic->tc_course_id,
         ];
-        $studentTopic = StudentTopic::where($param)->first();
+        $studentTopic = StudentTopic::where('st_student_id', $user->id)->first();
         if ($studentTopic) {
             return response([
                 'code' => 0,

@@ -10,7 +10,7 @@ use App\Models\Course;
 use App\Models\User;
 use App\Http\Requests\ScheduleStudentRequest;
 use App\Helpers\MailHelper;
-use App\Models\Topic;
+use App\Models\TopicCourse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use League\Flysystem\Exception;
@@ -58,13 +58,14 @@ class ScheduleStudentController extends Controller
     public function create()
     {
         $user = Auth::user();
-        $topics = $user->topicsAsTeacher->unique('id');
+        // $topics = $user->topicsAsTeacher->unique('id');//$topics ~ TopicCourse
+        $topics = $user->topicsAsTeacher()->with('topic')->get()->unique('id');//$topics ~ TopicCourse
         return view('admin.schedule.create', compact('topics'));
     }
 
     public function getStudentList(Request $request)
     {
-        $topic = Topic::where('id', $request->id)->first();
+        $topic = TopicCourse::where('id', $request->id)->first();//$topic ~ TopicCourse
         $studentList = $topic->students;
         return $studentList;
     }
@@ -139,7 +140,7 @@ class ScheduleStudentController extends Controller
     {
         //query topics of teacher
         $user = Auth::user();
-        $topics = $user->topicsAsTeacher->unique('id');
+        $topics = $user->topicsAsTeacher()->with('topic')->get()->unique('id');//$topics ~ TopicCourse
         //query notified student list
         $notification = Notification::with(['notificationUsers' => function($query) {
             $query->with('user');

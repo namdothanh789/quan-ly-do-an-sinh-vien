@@ -99,14 +99,14 @@ class User extends Authenticatable
     // Relationship for students
     public function topicsAsStudent()
     {
-        return $this->belongsToMany(Topic::class, 'student_topics', 'st_student_id', 'st_topic_id')
+        return $this->belongsToMany(TopicCourse::class, 'student_topics', 'st_student_id', 'st_topic_id')
                     ->withPivot('st_teacher_id');
     }
 
     // Relationship for teachers
     public function topicsAsTeacher()
     {
-        return $this->belongsToMany(Topic::class, 'student_topics', 'st_teacher_id', 'st_topic_id')
+        return $this->belongsToMany(TopicCourse::class, 'student_topics', 'st_teacher_id', 'st_topic_id')
                     ->withPivot('st_student_id');
     }
 

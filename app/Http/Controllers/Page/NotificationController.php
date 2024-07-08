@@ -21,7 +21,7 @@ class NotificationController extends Controller
         ]);
     }
 
-    public function index(Request $request)
+    public function index(Request $request)//đang không dùng
     {
         $user = Auth::guard('students')->user();
         $notifications = Notification::where(['n_status' => 1])->whereIn('id', function ($query) use($user) {

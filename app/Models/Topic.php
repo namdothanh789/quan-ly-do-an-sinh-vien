@@ -20,16 +20,16 @@ class Topic extends Model
     }
 
     // Relationship for students
-    public function students()
-    {
-        return $this->belongsToMany(User::class, 'student_topics', 'st_topic_id', 'st_student_id')
-                    ->withPivot('st_teacher_id');
-    }
+    // public function students()
+    // {
+    //     return $this->belongsToMany(User::class, 'student_topics', 'st_topic_id', 'st_student_id')
+    //                 ->withPivot('st_teacher_id');
+    // }
 
     // Relationship for teachers
-    public function teachers()
-    {
-        return $this->belongsToMany(User::class, 'student_topics', 'st_topic_id', 'st_teacher_id')
-                    ->withPivot('st_student_id');
-    }
+    // public function teachers()
+    // {
+    //     return $this->belongsToMany(User::class, 'student_topics', 'st_topic_id', 'st_teacher_id')
+    //                 ->withPivot('st_student_id');
+    // }
 }
