@@ -170,6 +170,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
 
         Route::group(['prefix' => 'student-topics'], function(){
             Route::get('/','StudentTopicController@index')->name('student.topics.index')->middleware('permission:quan-ly-danh-sach-dang-ky-de-tai|toan-quyen-quan-ly'); //màn hiện danh sách đề tài cùng sinh viên làm đề tài của giảng viên.
+            Route::get('/thesisFile','ThesisFileController@thesisFileIndex')->name('student.topics.thesisFile.index')->middleware('permission:quan-ly-danh-sach-dang-ky-de-tai|toan-quyen-quan-ly');
             Route::get('/update/{id}','StudentTopicController@evaluate')->name('student.topics.update')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly'); //màn đánh giá file báo cáo
             // Route::post('/update/outline{id}','StudentTopicController@updateOutline')->name('student.update.outline')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');//route này đang ko dùng
             // Route::post('/update/thesis/book{id}','StudentTopicController@updateThesisBook')->name('student.update.thesis.book')->middleware('permission:nhan-set-va-cham-diem-de-tai|toan-quyen-quan-ly');// route này đang ko dùng

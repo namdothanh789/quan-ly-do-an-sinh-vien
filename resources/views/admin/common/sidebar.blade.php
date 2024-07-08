@@ -43,14 +43,27 @@
                     </a>
                 </li>
                 @if ($user->can(['toan-quyen-quan-ly', 'quan-ly-danh-sach-dang-ky-de-tai']))
-                <li class="nav-item">
-                    <a href="{{ route('student.topics.index') }}" class="nav-link {{ isset($student_topics) ? $student_topics : '' }}">
-                        <i class="nav-icon fas fa-clipboard-list"></i>
-                        <p>Danh sách đề tài</p>
-                    </a>
-                </li>
+                    <li class="nav-item has-treeview {{ isset($student_topics) || isset($thesisFile_active) ? 'menu-open' : ''}}">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-book" aria-hidden="true"></i>
+                            <p>Đề tài hướng dẫn <i class="fas fa-angle-left right"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('student.topics.index') }}" class="nav-link {{ isset($student_topics) ? $student_topics : '' }}">
+                                    <i class="nav-icon fas fa-clipboard-list"></i>
+                                    <p>Danh sách đề tài</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('student.topics.thesisFile.index') }}" class="nav-link {{ isset($thesisFile_active) ? $thesisFile_active : '' }}">
+                                    <i class="nav-icon fas fa-file"></i>
+                                    <p>Danh sách file đồ án</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 @endif
-
 
                 @if ($user->can(['toan-quyen-quan-ly', 'quan-ly-danh-sach-sinh-vien', 'danh-sach-nhom-sinh-vien']))
                     <li class="nav-item has-treeview {{ isset($student_active) || isset($group_active) ? 'menu-open' : ''}}">
@@ -133,7 +146,7 @@
                 @if ($user->can(['toan-quyen-quan-ly', 'danh-sach-lich-hen']))
                 <li class="nav-item">
                     <a href="{{ route('schedule.student.index') }}" class="nav-link {{ isset($schedule_active)  ? $schedule_active : '' }}">
-                        <i class="fa fa-fw fa-calculator nav-icon"></i>
+                        <i class="fa fa-fw fa-calendar nav-icon"></i>
                         <p>Lịch hẹn</p>
                     </a>
                 </li>
