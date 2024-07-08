@@ -12,13 +12,22 @@
                 $user = Auth::user();
             @endphp
             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                <img src="{{ asset('/admin/dist/img/avatar5.png') }}" class="user-image img-circle elevation-2" alt="User Image">
-                <span class="d-none d-md-inline">{!! $user->name !!}</span>
+                @if (isset($user) && !empty($user->avatar))
+                    <img src="{{ asset(pare_url_file($user->avatar)) }}" class="user-image img-circle elevation-2" alt="User Image">
+                    <span class="d-none d-md-inline">{!! $user->name !!}</span>
+                @else
+                    <img src="{{ asset('/admin/dist/img/avatar5.png') }}" class="user-image img-circle elevation-2" alt="User Image">
+                    <span class="d-none d-md-inline">{!! $user->name !!}</span>
+                @endif
             </a>
             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <!-- User image -->
                 <li class="user-header bg-primary">
-                    <img src="{{ asset('/admin/dist/img/avatar5.png') }}" class="img-circle elevation-2" alt="User Image">
+                    @if (isset($user) && !empty($user->avatar))
+                        <img src="{{ asset(pare_url_file($user->avatar)) }}" class="img-circle elevation-2" alt="User Image">
+                    @else
+                        <img src="{{ asset('/admin/dist/img/avatar5.png') }}" class="img-circle elevation-2" alt="User Image">
+                    @endif
                     <p>
                         {!! isset($user->name) ? $user->name : '' !!}
                         <small>{!! isset($user->email) ? $user->email : '' !!}</small>

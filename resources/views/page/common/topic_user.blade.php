@@ -32,7 +32,7 @@
                 <!-- Card body -->
                 <div class="card-body" style="min-height: 142px">
                     <div class="row">
-                        <div class="col" style="padding: 0px">
+                        <div class="col">
                             <h5 class="card-title text-uppercase text-muted mb-0">Nộp file báo cáo</h5>
                         </div>
                         <div class="col-auto">

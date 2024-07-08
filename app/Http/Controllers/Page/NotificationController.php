@@ -63,7 +63,7 @@ class NotificationController extends Controller
     public function create()
     {
         $student = Auth::guard('students')->user();
-        $studentTopic = $student->topicsAsStudent->first(); //first will return 1 model, get will return collection of models
+        $studentTopic = $student->topicsAsStudent->first(); //first will return 1 model, get will return collection of models/ $studentTopic ~ TopicCourse
         $teacher = $studentTopic->teachers->first();
         $sameTopicStudentList = $studentTopic->students;
         return view('page.schedule.create', compact('teacher', 'sameTopicStudentList'));
@@ -192,7 +192,7 @@ class NotificationController extends Controller
                             'nu_status' => 1,
                         ];
 
-                        if (NotificationUser::where('nu_notification_id', $id)->where('nu_user_id', $user->id)->delete()) {
+                        if (NotificationUser::where('nu_notification_id', $id)->where('nu_user_id', $user->id)->delete()) {//không tạo thêm bản ghi cho người khác
                             NotificationUser::create($notificationUser);
                         }
 

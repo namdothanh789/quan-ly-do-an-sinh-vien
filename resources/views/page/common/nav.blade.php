@@ -23,9 +23,9 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    {{-- <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         <i class="ni ni-bell-55"></i>
-                    </a>
+                    </a> --}}
                     <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden">
                         <!-- Dropdown header -->
                         <div class="px-3 py-3">
