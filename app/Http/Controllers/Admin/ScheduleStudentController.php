@@ -195,9 +195,10 @@ class ScheduleStudentController extends Controller
                         ];
 
 
-                        if (NotificationUser::where('nu_notification_id', $id)->where('nu_user_id', $user->id)->delete()) {
-                            NotificationUser::create($notificationUser);
-                        }
+                        NotificationUser::updateOrCreate(
+                            ['nu_notification_id' => $id, 'nu_user_id' => $user->id],
+                            $notificationUser
+                        );
 
                         // send email
                         $dataMail = [
@@ -221,7 +222,7 @@ class ScheduleStudentController extends Controller
             return redirect()->route('schedule.student.index')->with('success', 'Cập nhật thành công thông báo');
         } catch (\Exception $exception) {
             \DB::rollBack();
-            return redirect()->back()->with('error', $exception->getMessage());
+            return redirect()->back()->with('error', 'Đã xảy ra lỗi không thể cập nhật thông báo');
         }
     }
 
